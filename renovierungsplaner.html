@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renovierungsplaner</title>
+<style>
+:root {
+  --bg: #f6f1ec;
+  --card: #ffffff;
+  --primary: #2d4a3e;
+  --accent: #e8774a;
+  --accent-light: #f0a080;
+  --text: #1e1e1e;
+  --muted: #6b6560;
+  --border: #ddd6ce;
+  --success: #2d8a4e;
+  --warning: #e67e22;
+  --danger: #c0392b;
+  --radius: 10px;
+  --shadow: 0 2px 14px rgba(0,0,0,0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- HEADER ---- */
+header {
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+}
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.header-title { font-size: 18px; font-weight: 700; }
+.header-sub { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 1px; }
+.header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.hamburger {
+  display: none;
+  background: rgba(255,255,255,.13);
+  border: 2px solid rgba(255,255,255,.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 20px;
+  width: 44px; height: 44px;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 0 4px;
+  border-top: 1px solid rgba(255,255,255,.15);
+  margin-top: 6px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .btn { width: 100%; justify-content: flex-start; font-size: 15px; }
+
+/* ---- MAIN ---- */
+main { max-width: 1000px; margin: 0 auto; padding: 92px 16px 100px; }
+
+/* ---- SECTION ---- */
+.section {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.section-head {
+  background: var(--primary);
+  color: #fff;
+  padding: 13px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-num {
+  background: var(--accent);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
+.section-body { padding: 20px; }
+
+/* ---- GRID ---- */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+.span2 { grid-column: span 2; }
+.spanfull { grid-column: 1/-1; }
+
+/* ---- FIELDS ---- */
+.f { display: flex; flex-direction: column; gap: 6px; }
+label.fl {
+  font-size: 12px; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+input[type=text], input[type=number], input[type=date],
+input[type=tel], input[type=email], select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  background: #fff;
+  -webkit-appearance: none;
+  transition: border-color .15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+input[readonly] { background: #f5f5f5; color: #777; }
+textarea { min-height: 90px; resize: vertical; }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 18px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all .15s; min-height: 44px;
+  white-space: nowrap; font-family: inherit;
+}
+.btn-acc { background: var(--accent); color: #fff; }
+.btn-acc:hover { background: #b86e08; }
+.btn-ghost { background: rgba(255,255,255,.13); color: #fff; border: 2px solid rgba(255,255,255,.3); }
+.btn-ghost:hover { background: rgba(255,255,255,.22); }
+.btn-ok { background: var(--success); color: #fff; }
+.btn-bad { background: var(--danger); color: #fff; }
+.btn-out { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+.btn-out:hover { background: var(--accent); color: #fff; }
+.btn-sm { padding: 7px 12px; font-size: 13px; min-height: 36px; }
+.btn-xs { padding: 5px 10px; font-size: 12px; min-height: 32px; }
+
+/* ---- DIVIDER ---- */
+hr.div { border: none; border-top: 1px solid #eee; margin: 16px 0; }
+.sub-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted); margin: 16px 0 10px;
+}
+
+/* ---- STATUS BADGE ---- */
+.status-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+  white-space: nowrap;
+}
+.s-geplant    { background: #e8f0fe; color: #1a56db; }
+.s-beauftragt { background: #fff3cd; color: #856404; }
+.s-laufend    { background: #fff0e0; color: #b86e08; }
+.s-erledigt   { background: #d1fae5; color: #065f46; }
+.s-pausiert   { background: #f3f4f6; color: #6b7280; }
+
+/* ---- FORTSCHRITT ---- */
+.progress-wrap { margin: 12px 0; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 13px; font-weight: 600; margin-bottom: 6px;
+  color: var(--muted);
+}
+.progress-bar {
+  height: 10px; background: #eee;
+  border-radius: 5px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 5px;
+  background: var(--accent);
+  transition: width .4s ease;
+}
+.progress-fill.voll { background: var(--success); }
+
+/* ---- RAUM KARTE ---- */
+.room-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.room-head {
+  background: #f7f7f5; padding: 11px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.room-num {
+  background: var(--primary); color: #fff;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.room-body { padding: 14px; }
+.room-select {
+  font-size: 15px; font-weight: 600;
+  border: none; background: transparent; cursor: pointer;
+  padding: 4px; color: var(--text);
+  -webkit-appearance: none;
+}
+
+/* ---- MASSNAHMEN TABELLE ---- */
+.massnahmen-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.massnahmen-table th {
+  text-align: left; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--muted); padding: 6px 8px;
+  border-bottom: 2px solid #eee;
+}
+.massnahmen-table td {
+  padding: 8px;
+  border-bottom: 1px solid #f5f5f5;
+  vertical-align: middle;
+  font-size: 14px;
+}
+.massnahmen-table tr:last-child td { border-bottom: none; }
+.massnahmen-table input, .massnahmen-table select {
+  padding: 8px 10px; font-size: 14px; border-radius: 6px;
+}
+.m-desc { min-width: 160px; }
+.m-hw   { min-width: 120px; }
+.m-kost { width: 100px; }
+.m-stat { width: 130px; }
+.m-prio { width: 90px; }
+.m-act  { width: 40px; }
+
+/* ---- HANDWERKER TABELLE ---- */
+.hw-table { width: 100%; border-collapse: collapse; }
+.hw-table th {
+  text-align: left; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--muted); padding: 8px 10px;
+  border-bottom: 2px solid #eee;
+}
+.hw-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f5f5f5;
+  vertical-align: middle;
+  font-size: 14px;
+}
+.hw-table tr:last-child td { border-bottom: none; }
+.hw-table input, .hw-table select {
+  padding: 8px 10px; font-size: 14px; border-radius: 6px;
+}
+.stars { display: flex; gap: 2px; }
+.star {
+  font-size: 18px; cursor: pointer; color: #ddd;
+  transition: color .1s; line-height: 1;
+}
+.star.on { color: var(--accent); }
+
+/* ---- KOSTEN BOX ---- */
+.kosten-box {
+  background: var(--primary); color: #fff;
+  border-radius: var(--radius); padding: 20px;
+  margin-top: 16px;
+}
+.kosten-row {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  font-size: 15px;
+}
+.kosten-row:last-child { border-bottom: none; }
+.kosten-row.total {
+  font-weight: 800; font-size: 20px;
+  border-top: 2px solid rgba(255,255,255,.2);
+  margin-top: 8px; padding-top: 12px;
+}
+.kosten-row.total .val { color: var(--accent-light); }
+.kosten-row.over .val { color: #ff6b6b; }
+.kosten-row .label { color: rgba(255,255,255,.7); }
+.kosten-row .val { font-weight: 700; }
+
+/* ---- CHECKLIST ---- */
+.chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.chk-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer; font-size: 14px;
+  transition: all .15s;
+  user-select: none;
+}
+.chk-item:hover { border-color: var(--accent); }
+.chk-item input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+.chk-item.done { background: #f0fdf4; border-color: var(--success); color: #065f46; }
+
+/* ---- INFOBOX ---- */
+.infobox {
+  background: #fff8f0; border: 1px solid #f5d8a0;
+  border-radius: 8px; padding: 11px 14px;
+  font-size: 14px; color: #7a5000;
+  margin-bottom: 14px;
+}
+.infobox.warn {
+  background: #fff3cd; border-color: #ffc107; color: #664d03;
+}
+
+/* ---- MODAL ---- */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); z-index: 500;
+  padding: 20px; overflow-y: auto;
+}
+.overlay.show { display: flex; align-items: flex-start; justify-content: center; }
+.modal {
+  background: #fff; border-radius: 12px;
+  max-width: 620px; width: 100%; margin: auto;
+  overflow: hidden;
+}
+.modal-head {
+  background: var(--primary); color: #fff;
+  padding: 15px 20px; font-weight: 700;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-close {
+  background: none; border: none; color: #fff;
+  font-size: 20px; cursor: pointer; line-height: 1;
+}
+.modal-body { padding: 20px; }
+.proto-list { list-style: none; }
+.proto-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px; border-bottom: 1px solid #eee; gap: 12px;
+}
+.proto-item:last-child { border-bottom: none; }
+.proto-meta { font-size: 13px; color: #999; margin-top: 2px; }
+
+/* ---- PRINT ---- */
+@media print {
+  @page { margin: 15mm; }
+  html, body { margin: 0 !important; padding: 0 !important; }
+  header { display: none !important; }
+  main { padding-top: 10px !important; }
+  .noprint { display: none !important; }
+  .section { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  body { background: #fff; }
+  .overlay { display: none !important; }
+  .kosten-box { background: #1c2b3a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 600px) {
+  .hamburger { display: flex; }
+  .header-btns { display: none; }
+  .header-inner { flex-wrap: nowrap; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .span2, .spanfull { grid-column: span 1; }
+  .chk-grid { grid-template-columns: 1fr; }
+  .massnahmen-table { display: block; overflow-x: auto; }
+  .hw-table { display: block; overflow-x: auto; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Renovierungsplaner</div>
+      <div class="header-sub">Privat renovieren, den Überblick behalten</div>
+    </div>
+    <div class="header-btns noprint">
+      <button class="btn btn-ghost btn-sm" onclick="showProjekte()">📁 Projekte</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveProjekt()" id="save-btn">💾 Speichern</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveToFile()">⬇ Datei</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer;">⬆ Laden<input type="file" accept=".json" style="display:none;" onchange="loadFromFile(event)"></label>
+      <button class="btn btn-ghost btn-sm" onclick="newProjekt()">+ Neu</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportTXT()">📝 TXT</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportWord()">📃 Word</button>
+      <button class="btn btn-acc btn-sm" onclick="window.print()">📄 PDF</button>
+    </div>
+    <button class="hamburger noprint" onclick="toggleMenu()" id="hamburger-btn">☰</button>
+  </div>
+  <div class="mobile-menu noprint" id="mobile-menu">
+    <button class="btn btn-ghost btn-sm" onclick="showProjekte();toggleMenu()">📁 Projekte</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveProjekt();toggleMenu()" id="save-btn-mobile">💾 Speichern</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveToFile();toggleMenu()">⬇ Als Datei speichern</button>
+    <label class="btn btn-ghost btn-sm" style="cursor:pointer;">⬆ Datei laden<input type="file" accept=".json" style="display:none;" onchange="loadFromFile(event);toggleMenu()"></label>
+    <button class="btn btn-ghost btn-sm" onclick="newProjekt();toggleMenu()">+ Neues Projekt</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportTXT();toggleMenu()">📝 Als TXT exportieren</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportWord();toggleMenu()">📃 Als Word exportieren</button>
+    <button class="btn btn-acc btn-sm" onclick="window.print();toggleMenu()">📄 Als PDF drucken</button>
+  </div>
+</header>
+
+<main>
+<form id="plan" autocomplete="on">
+
+<!-- 1: PROJEKTDATEN -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">1</div> Projektdaten</div>
+  <div class="section-body">
+    <div class="g3">
+      <div class="f span2">
+        <label class="fl">Projektname</label>
+        <input type="text" id="pname" placeholder="z.B. Renovierung Wohnung Hauptstraße">
+      </div>
+      <div class="f">
+        <label class="fl">Projekt-ID</label>
+        <input type="text" id="pid" readonly>
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Objekt</div>
+
+    <div class="g2">
+      <div class="f span2">
+        <label class="fl">Straße &amp; Hausnummer</label>
+        <input type="text" id="ostr" placeholder="Musterstraße 12">
+      </div>
+      <div class="f">
+        <label class="fl">PLZ</label>
+        <input type="text" id="oplz" placeholder="12345">
+      </div>
+      <div class="f">
+        <label class="fl">Ort</label>
+        <input type="text" id="oort" placeholder="Musterstadt">
+      </div>
+      <div class="f">
+        <label class="fl">Objekttyp</label>
+        <select id="otyp">
+          <option value="">Bitte wählen</option>
+          <option>Eigentumswohnung</option>
+          <option>Mietwohnung</option>
+          <option>Einfamilienhaus</option>
+          <option>Doppelhaushälfte</option>
+          <option>Reihenhaus</option>
+          <option>Mehrfamilienhaus</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+      <div class="f">
+        <label class="fl">Wohnfläche ca. (m²)</label>
+        <input type="number" id="flaeche" placeholder="z.B. 85" min="0" max="2000">
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Zeitraum &amp; Budget</div>
+
+    <div class="g4">
+      <div class="f">
+        <label class="fl">Geplanter Start</label>
+        <input type="date" id="pstart">
+      </div>
+      <div class="f">
+        <label class="fl">Geplantes Ende</label>
+        <input type="date" id="pende">
+      </div>
+      <div class="f">
+        <label class="fl">Gesamtbudget (€)</label>
+        <input type="number" id="budget" placeholder="0" min="0" step="100" oninput="updateKosten()" style="font-weight:700;">
+      </div>
+      <div class="f">
+        <label class="fl">Eigenleistung (€)</label>
+        <input type="number" id="eigenleistung" placeholder="0" min="0" step="100" oninput="updateKosten()">
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Kontaktperson</div>
+
+    <div class="g3">
+      <div class="f">
+        <label class="fl">Name</label>
+        <input type="text" id="kname" placeholder="Vor- und Nachname">
+      </div>
+      <div class="f">
+        <label class="fl">Telefon</label>
+        <input type="tel" id="ktel" placeholder="+49 ...">
+      </div>
+      <div class="f">
+        <label class="fl">E-Mail</label>
+        <input type="email" id="kemail" placeholder="email@beispiel.de">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: RAUMPLANER -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">2</div> Raumplaner</div>
+  <div class="section-body">
+    <div class="infobox">Pro Raum die geplanten Maßnahmen eintragen. Kosten und Status werden automatisch in der Übersicht (Abschnitt 3) zusammengefasst.</div>
+    <div id="raeume"></div>
+    <button type="button" class="btn btn-acc noprint" onclick="addRaum()">＋ Raum hinzufügen</button>
+  </div>
+</div>
+
+<!-- 3: KOSTENÜBERSICHT -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">3</div> Kostenübersicht &amp; Fortschritt</div>
+  <div class="section-body">
+    <div id="fortschritt-wrap" class="progress-wrap">
+      <div class="progress-label">
+        <span>Erledigte Maßnahmen</span>
+        <span id="fortschritt-pct">0 %</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="fortschritt-bar" style="width:0%"></div></div>
+    </div>
+    <div id="budget-warn" style="display:none;" class="infobox warn" style="margin-top:12px;"></div>
+    <div id="kosten-tabelle" style="margin-top:16px;"></div>
+    <div class="kosten-box" style="margin-top:16px;">
+      <div class="kosten-row">
+        <span class="label">Geplante Kosten gesamt</span>
+        <span class="val" id="k-geplant">0,00 €</span>
+      </div>
+      <div class="kosten-row">
+        <span class="label">Tatsächliche Kosten bisher</span>
+        <span class="val" id="k-tatsaech">0,00 €</span>
+      </div>
+      <div class="kosten-row">
+        <span class="label">Eigenleistung</span>
+        <span class="val" id="k-eigen">0,00 €</span>
+      </div>
+      <div class="kosten-row">
+        <span class="label">Budget</span>
+        <span class="val" id="k-budget">0,00 €</span>
+      </div>
+      <div class="kosten-row total" id="k-diff-row">
+        <span class="label">Verbleibend</span>
+        <span class="val" id="k-diff">0,00 €</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4: HANDWERKERLISTE -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">4</div> Handwerkerliste</div>
+  <div class="section-body">
+    <div class="infobox">Alle angefragten und beauftragten Handwerker hier erfassen.</div>
+    <div style="overflow-x:auto;">
+      <table class="hw-table">
+        <thead>
+          <tr>
+            <th>Name / Firma</th>
+            <th>Gewerk</th>
+            <th>Telefon</th>
+            <th>Angebot (€)</th>
+            <th>Status</th>
+            <th>Bewertung</th>
+            <th class="noprint"></th>
+          </tr>
+        </thead>
+        <tbody id="hw-body"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn btn-acc noprint" onclick="addHandwerker()" style="margin-top:12px;">＋ Handwerker hinzufügen</button>
+  </div>
+</div>
+
+<!-- 5: CHECKLISTE & NOTIZEN -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">5</div> Checkliste &amp; Notizen</div>
+  <div class="section-body">
+    <div class="sub-label">Typische Aufgaben vor und während der Renovierung</div>
+    <div class="chk-grid" id="checkliste"></div>
+
+    <hr class="div">
+
+    <div class="f">
+      <label class="fl">Freie Notizen</label>
+      <textarea id="notizen" placeholder="Offene Fragen, Ideen, Absprachen, Liefertermine..."></textarea>
+    </div>
+  </div>
+</div>
+
+</form>
+</main>
+
+<footer style="text-align:center;padding:20px 16px 30px;font-size:11px;color:#aaa;max-width:1000px;margin:0 auto;border-top:1px solid #e8e2dc;">
+  © 2026 Lowmansland.de. Alle Rechte vorbehalten. Dieses Tool ist ausschließlich für die private Nutzung lizenziert. Gewerbliche Nutzung ist nicht gestattet. Vervielfältigung und Weitergabe ohne ausdrückliche Genehmigung sind untersagt.
+</footer>
+
+<!-- MODAL: Projekte -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <span>Gespeicherte Projekte</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <ul class="proto-list" id="proto-list"></ul>
+      <div id="no-protos" style="text-align:center;color:#bbb;padding:24px;display:none;">Noch keine gespeicherten Projekte.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// KONSTANTEN
+// ============================================================
+const RAUM_TYPEN = [
+  'Wohnzimmer','Schlafzimmer','Kinderzimmer','Küche','Bad / Dusche','WC / Gäste-WC',
+  'Flur / Diele','Arbeitszimmer','Esszimmer','Keller','Dachgeschoss',
+  'Garage','Balkon / Terrasse','Garten','Sonstiges'
+];
+
+const MASSNAHMEN_VORSCHLAEGE = [
+  'Wände streichen','Decke streichen','Tapezieren','Boden verlegen',
+  'Fliesen legen','Fußleisten montieren','Fenster erneuern','Türen erneuern',
+  'Elektrik erneuern','Heizung / Heizkörper','Badezimmer sanieren',
+  'Küche einbauen','Einbauschränke','Beleuchtung erneuern','Sonstiges'
+];
+
+const CHECKLISTE_ITEMS = [
+  'Bestandsaufnahme aller Räume gemacht',
+  'Budget festgelegt',
+  'Handwerker angefragt (mind. 3 Angebote)',
+  'Angebote verglichen',
+  'Baugenehmigung geprüft (falls nötig)',
+  'Hausratversicherung informiert',
+  'Baumärkte / Material recherchiert',
+  'Entsorgung Altmaterialien geplant',
+  'Nachbarn informiert (Lärm, Zeiten)',
+  'Auszug / Möbel einlagern geplant',
+  'Abnahmeprotokoll vorbereitet',
+  'Handwerkerrechnungen geprüft und abgeheftet'
+];
+
+const STATUS_OPT = ['Geplant','Beauftragt','Laufend','Erledigt','Pausiert'];
+const STATUS_CLASS = { 'Geplant':'s-geplant','Beauftragt':'s-beauftragt','Laufend':'s-laufend','Erledigt':'s-erledigt','Pausiert':'s-pausiert' };
+const HW_STATUS = ['Angefragt','Angebot erhalten','Beauftragt','Abgeschlossen','Abgesagt'];
+
+let roomIdx = 0;
+let hwIdx = 0;
+
+// ============================================================
+// STORAGE HELPER
+// ============================================================
+function lsGet(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; }
+  catch(e) { return fallback; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e) { return false; }
+}
+function lsRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  genId();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('pstart').value = today;
+  const ende = new Date(); ende.setMonth(ende.getMonth() + 3);
+  document.getElementById('pende').value = ende.toISOString().split('T')[0];
+  addRaum();
+  addHandwerker();
+  buildCheckliste();
+  updateKosten();
+});
+
+function genId() {
+  const d = new Date();
+  document.getElementById('pid').value = `REN-${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}`;
+}
+function p2(n) { return String(n).padStart(2,'0'); }
+
+// ============================================================
+// CHECKLISTE
+// ============================================================
+function buildCheckliste(checked = []) {
+  const wrap = document.getElementById('checkliste');
+  wrap.innerHTML = '';
+  CHECKLISTE_ITEMS.forEach((text, i) => {
+    const label = document.createElement('label');
+    label.className = 'chk-item' + (checked.includes(i) ? ' done' : '');
+    label.innerHTML = `<input type="checkbox" ${checked.includes(i) ? 'checked' : ''} onchange="toggleChk(this)"> ${text}`;
+    wrap.appendChild(label);
+  });
+}
+function toggleChk(el) {
+  el.closest('.chk-item').classList.toggle('done', el.checked);
+}
+
+// ============================================================
+// RÄUME
+// ============================================================
+function addRaum(data) {
+  const i = roomIdx++;
+  const div = document.createElement('div');
+  div.className = 'room-card';
+  div.id = `r${i}`;
+
+  const opts = RAUM_TYPEN.map(t => `<option${data?.typ === t ? ' selected' : ''}>${t}</option>`).join('');
+
+  div.innerHTML = `
+    <div class="room-head">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="room-num">${i + 1}</div>
+        <select class="room-select" onchange="updateKosten()">
+          <option value="">Raumtyp wählen</option>${opts}
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:12px;color:var(--muted);">ca.</span>
+        <input type="number" placeholder="m²" min="0" max="500" style="width:70px;padding:6px 8px;font-size:13px;" value="${data?.m2 || ''}">
+        <span style="font-size:12px;color:var(--muted);">m²</span>
+        <button type="button" class="btn btn-xs btn-bad noprint" onclick="document.getElementById('r${i}').remove();updateKosten()">✕</button>
+      </div>
+    </div>
+    <div class="room-body">
+      <div style="overflow-x:auto;">
+        <table class="massnahmen-table">
+          <thead>
+            <tr>
+              <th class="m-desc">Maßnahme</th>
+              <th class="m-hw">Handwerker</th>
+              <th class="m-kost">Kosten geplant (€)</th>
+              <th class="m-kost">Kosten tatsächl. (€)</th>
+              <th class="m-stat">Status</th>
+              <th class="m-prio">Priorität</th>
+              <th class="m-act noprint"></th>
+            </tr>
+          </thead>
+          <tbody id="m-body-${i}"></tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-xs btn-out noprint" onclick="addMassnahme(${i})" style="margin-top:8px;">＋ Maßnahme</button>
+    </div>`;
+
+  document.getElementById('raeume').appendChild(div);
+
+  if (data?.massnahmen?.length) {
+    data.massnahmen.forEach(m => addMassnahme(i, m));
+  } else {
+    addMassnahme(i);
+  }
+}
+
+// ============================================================
+// MASSNAHMEN
+// ============================================================
+function addMassnahme(roomI, data) {
+  const tbody = document.getElementById(`m-body-${roomI}`);
+  if (!tbody) return;
+  const tr = document.createElement('tr');
+
+  const descOpts = MASSNAHMEN_VORSCHLAEGE.map(v =>
+    `<option${data?.desc === v ? ' selected' : ''}>${v}</option>`).join('');
+  const statOpts = STATUS_OPT.map(v =>
+    `<option${(data?.status || 'Geplant') === v ? ' selected' : ''}>${v}</option>`).join('');
+
+  tr.innerHTML = `
+    <td class="m-desc">
+      <select style="width:100%;" onchange="updateKosten()">
+        <option value="">Maßnahme wählen</option>${descOpts}
+      </select>
+    </td>
+    <td class="m-hw"><input type="text" placeholder="Handwerker / Eigenleistung" value="${data?.hw || ''}" style="width:100%;"></td>
+    <td class="m-kost"><input type="number" placeholder="0" min="0" step="10" value="${data?.kgeplant || ''}" oninput="updateKosten()" style="width:100%;text-align:right;"></td>
+    <td class="m-kost"><input type="number" placeholder="0" min="0" step="10" value="${data?.ktats || ''}" oninput="updateKosten()" style="width:100%;text-align:right;"></td>
+    <td class="m-stat">
+      <select onchange="updateKosten()" style="width:100%;">${statOpts}</select>
+    </td>
+    <td class="m-prio">
+      <select style="width:100%;">
+        <option${(data?.prio || '') === 'Hoch' ? ' selected' : ''}>Hoch</option>
+        <option${(data?.prio || 'Mittel') === 'Mittel' ? ' selected' : ''}>Mittel</option>
+        <option${(data?.prio || '') === 'Niedrig' ? ' selected' : ''}>Niedrig</option>
+      </select>
+    </td>
+    <td class="m-act noprint">
+      <button type="button" class="btn btn-xs btn-bad" onclick="this.closest('tr').remove();updateKosten()">✕</button>
+    </td>`;
+
+  tbody.appendChild(tr);
+}
+
+// ============================================================
+// HANDWERKER
+// ============================================================
+function addHandwerker(data) {
+  const j = hwIdx++;
+  const tbody = document.getElementById('hw-body');
+  const tr = document.createElement('tr');
+  tr.id = `hw${j}`;
+
+  const statOpts = HW_STATUS.map(v =>
+    `<option${(data?.status || 'Angefragt') === v ? ' selected' : ''}>${v}</option>`).join('');
+
+  const stars = [1,2,3,4,5].map(n =>
+    `<span class="star${(data?.rating || 0) >= n ? ' on' : ''}" onclick="setStars('hw${j}',${n})">★</span>`
+  ).join('');
+
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Max Muster GmbH" value="${data?.name || ''}" style="width:100%;min-width:140px;"></td>
+    <td><input type="text" placeholder="z.B. Maler" value="${data?.gewerk || ''}" style="width:100%;min-width:100px;"></td>
+    <td><input type="tel" placeholder="+49 ..." value="${data?.tel || ''}" style="width:100%;min-width:120px;"></td>
+    <td><input type="number" placeholder="0" min="0" step="10" value="${data?.angebot || ''}" style="width:100%;text-align:right;min-width:90px;"></td>
+    <td><select style="width:100%;min-width:130px;">${statOpts}</select></td>
+    <td><div class="stars" id="stars-hw${j}">${stars}</div><input type="hidden" id="rating-hw${j}" value="${data?.rating || 0}"></td>
+    <td class="noprint"><button type="button" class="btn btn-xs btn-bad" onclick="document.getElementById('hw${j}').remove()">✕</button></td>`;
+
+  tbody.appendChild(tr);
+}
+
+function setStars(rowId, n) {
+  document.getElementById(`rating-${rowId}`).value = n;
+  const stars = document.querySelectorAll(`#stars-${rowId} .star`);
+  stars.forEach((s, i) => s.classList.toggle('on', i < n));
+}
+
+// ============================================================
+// KOSTENBERECHNUNG & FORTSCHRITT
+// ============================================================
+function updateKosten() {
+  let gesamtGeplant = 0, gesamtTats = 0;
+  let erledigtCount = 0, gesamtCount = 0;
+  const roomRows = [];
+
+  document.querySelectorAll('.room-card').forEach(card => {
+    const sel = card.querySelector('select.room-select');
+    const raumName = sel?.value || 'Unbekannter Raum';
+    let rGeplant = 0, rTats = 0, rErledigt = 0, rGesamt = 0;
+
+    card.querySelectorAll('tbody tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input[type=number]');
+      const statusSel = tr.querySelectorAll('select')[1];
+      const kg = parseFloat(inputs[0]?.value) || 0;
+      const kt = parseFloat(inputs[1]?.value) || 0;
+      const status = statusSel?.value || '';
+      rGeplant += kg;
+      rTats += kt;
+      rGesamt++;
+      gesamtCount++;
+      if (status === 'Erledigt') { rErledigt++; erledigtCount++; }
+    });
+
+    gesamtGeplant += rGeplant;
+    gesamtTats += rTats;
+    roomRows.push({ name: raumName, geplant: rGeplant, tats: rTats, erledigt: rErledigt, gesamt: rGesamt });
+  });
+
+  const budget = parseFloat(document.getElementById('budget').value) || 0;
+  const eigen = parseFloat(document.getElementById('eigenleistung').value) || 0;
+  const diff = budget - gesamtGeplant;
+  const pct = gesamtCount > 0 ? Math.round(erledigtCount / gesamtCount * 100) : 0;
+
+  // Fortschritt
+  const bar = document.getElementById('fortschritt-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'progress-fill' + (pct === 100 ? ' voll' : '');
+  document.getElementById('fortschritt-pct').textContent = pct + ' % (' + erledigtCount + ' von ' + gesamtCount + ')';
+
+  // Kosten-Boxwerte
+  document.getElementById('k-geplant').textContent = fmt(gesamtGeplant);
+  document.getElementById('k-tatsaech').textContent = fmt(gesamtTats);
+  document.getElementById('k-eigen').textContent = fmt(eigen);
+  document.getElementById('k-budget').textContent = fmt(budget);
+  document.getElementById('k-diff').textContent = fmt(diff);
+  const diffRow = document.getElementById('k-diff-row');
+  diffRow.classList.toggle('over', diff < 0);
+
+  // Budget-Warnung
+  const warn = document.getElementById('budget-warn');
+  if (budget > 0 && gesamtGeplant > budget) {
+    warn.style.display = 'block';
+    warn.textContent = `Budget um ${fmt(gesamtGeplant - budget)} überschritten.`;
+  } else {
+    warn.style.display = 'none';
+  }
+
+  // Raum-Tabelle
+  const tbl = document.getElementById('kosten-tabelle');
+  if (roomRows.length) {
+    tbl.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead><tr style="border-bottom:2px solid #eee;">
+        <th style="text-align:left;padding:7px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;">Raum</th>
+        <th style="text-align:right;padding:7px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;">Geplant</th>
+        <th style="text-align:right;padding:7px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;">Tatsächlich</th>
+        <th style="text-align:center;padding:7px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;">Fortschritt</th>
+      </tr></thead>
+      <tbody>${roomRows.map(r => `
+        <tr style="border-bottom:1px solid #f5f5f5;">
+          <td style="padding:8px;">${r.name || 'Unbenannt'}</td>
+          <td style="padding:8px;text-align:right;">${r.geplant > 0 ? fmt(r.geplant) : '–'}</td>
+          <td style="padding:8px;text-align:right;">${r.tats > 0 ? fmt(r.tats) : '–'}</td>
+          <td style="padding:8px;text-align:center;">
+            <span class="status-badge ${r.gesamt > 0 && r.erledigt === r.gesamt ? 's-erledigt' : r.erledigt > 0 ? 's-laufend' : 's-geplant'}">
+              ${r.erledigt} / ${r.gesamt}
+            </span>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+}
+
+function fmt(n) {
+  return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n);
+}
+
+// ============================================================
+// HAMBURGER
+// ============================================================
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger-btn');
+  const open = menu.classList.toggle('open');
+  btn.textContent = open ? '✕' : '☰';
+}
+
+// ============================================================
+// DATEN SAMMELN
+// ============================================================
+function gatherData() {
+  const d = {
+    id: document.getElementById('pid').value,
+    ts: new Date().toISOString(),
+    fields: {},
+    rooms: [],
+    handwerker: [],
+    checkliste: [],
+    notizen: document.getElementById('notizen').value
+  };
+
+  ['pid','pname','ostr','oplz','oort','otyp','flaeche','pstart','pende',
+   'budget','eigenleistung','kname','ktel','kemail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) d.fields[id] = el.value;
+  });
+
+  document.querySelectorAll('.room-card').forEach(card => {
+    const sel = card.querySelector('select.room-select');
+    const m2inp = card.querySelectorAll('input[type=number]')[0];
+    const massnahmen = [];
+    card.querySelectorAll('tbody tr').forEach(tr => {
+      const sels = tr.querySelectorAll('select');
+      const inps = tr.querySelectorAll('input[type=number]');
+      const hw = tr.querySelector('input[type=text]');
+      massnahmen.push({
+        desc: sels[0]?.value || '',
+        hw: hw?.value || '',
+        kgeplant: inps[0]?.value || '',
+        ktats: inps[1]?.value || '',
+        status: sels[1]?.value || 'Geplant',
+        prio: sels[2]?.value || 'Mittel'
+      });
+    });
+    d.rooms.push({ typ: sel?.value || '', m2: m2inp?.value || '', massnahmen });
+  });
+
+  document.querySelectorAll('#hw-body tr').forEach(tr => {
+    const inps = tr.querySelectorAll('input');
+    const stat = tr.querySelector('select');
+    const ratingInp = tr.querySelector('input[type=hidden]');
+    d.handwerker.push({
+      name: inps[0]?.value || '',
+      gewerk: inps[1]?.value || '',
+      tel: inps[2]?.value || '',
+      angebot: inps[3]?.value || '',
+      status: stat?.value || '',
+      rating: parseInt(ratingInp?.value) || 0
+    });
+  });
+
+  document.querySelectorAll('#checkliste input[type=checkbox]').forEach((el, i) => {
+    if (el.checked) d.checkliste.push(i);
+  });
+
+  return d;
+}
+
+// ============================================================
+// LADEN
+// ============================================================
+function loadData(d) {
+  if (!d?.id) return;
+
+  Object.entries(d.fields || {}).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+
+  document.getElementById('notizen').value = d.notizen || '';
+
+  document.getElementById('raeume').innerHTML = '';
+  roomIdx = 0;
+  (d.rooms || []).forEach(r => addRaum(r));
+
+  document.getElementById('hw-body').innerHTML = '';
+  hwIdx = 0;
+  (d.handwerker || []).forEach(h => addHandwerker(h));
+
+  buildCheckliste(d.checkliste || []);
+  updateKosten();
+  closeModal();
+}
+
+// ============================================================
+// SPEICHERN / PROJEKTE
+// ============================================================
+function saveProjekt() {
+  const d = gatherData();
+  const list = lsGet('ren_list', []);
+  const idx = list.findIndex(p => p.id === d.id);
+  const meta = { id: d.id, ts: d.ts, name: d.fields.pname || '', addr: (d.fields.ostr || '') + ' ' + (d.fields.oort || '') };
+  if (idx >= 0) list[idx] = meta; else list.push(meta);
+  const ok = lsSet('ren_list', list) && lsSet(`ren_p_${d.id}`, d);
+  const btn = document.getElementById('save-btn');
+  btn.textContent = ok ? '✅ Gespeichert!' : '⚠️ Nicht möglich';
+  setTimeout(() => btn.textContent = '💾 Speichern', 2200);
+}
+
+function showProjekte() {
+  const list = lsGet('ren_list', []).reverse();
+  const ul = document.getElementById('proto-list');
+  const no = document.getElementById('no-protos');
+  ul.innerHTML = '';
+  no.style.display = list.length ? 'none' : 'block';
+  list.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'proto-item';
+    li.innerHTML = `
+      <div>
+        <div style="font-weight:600;">${p.name || 'Unbenanntes Projekt'}</div>
+        <div class="proto-meta">${p.id} · ${p.addr.trim() || 'keine Adresse'}</div>
+        <div class="proto-meta">${new Date(p.ts).toLocaleString('de-DE')}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-out" onclick="loadProjekt('${p.id}')">📂 Laden</button>
+        <button class="btn btn-sm btn-ghost" style="background:var(--primary);" onclick="fileProjekt('${p.id}')">⬇ Datei</button>
+        <button class="btn btn-sm btn-bad" onclick="delProjekt('${p.id}')">🗑 Löschen</button>
+      </div>`;
+    ul.appendChild(li);
+  });
+  document.getElementById('modal').classList.add('show');
+}
+
+function loadProjekt(id) {
+  const d = lsGet(`ren_p_${id}`, {});
+  loadData(d);
+}
+
+function fileProjekt(id) {
+  const d = lsGet(`ren_p_${id}`, {});
+  if (!d.id) return;
+  const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Renovierungsplaner-${d.id}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function delProjekt(id) {
+  if (!confirm('Projekt wirklich löschen?')) return;
+  lsRemove(`ren_p_${id}`);
+  lsSet('ren_list', lsGet('ren_list', []).filter(p => p.id !== id));
+  showProjekte();
+}
+
+function saveToFile() {
+  const d = gatherData();
+  const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Renovierungsplaner-${d.id || 'projekt'}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function loadFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.id) throw new Error('Ungültig');
+      loadData(d);
+    } catch(err) {
+      alert('Datei konnte nicht geladen werden.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function newProjekt() {
+  if (!confirm('Neues Projekt starten? Nicht gespeicherte Daten gehen verloren.')) return;
+  document.getElementById('plan').reset();
+  document.getElementById('raeume').innerHTML = '';
+  document.getElementById('hw-body').innerHTML = '';
+  roomIdx = 0; hwIdx = 0;
+  genId();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('pstart').value = today;
+  const ende = new Date(); ende.setMonth(ende.getMonth() + 3);
+  document.getElementById('pende').value = ende.toISOString().split('T')[0];
+  addRaum();
+  addHandwerker();
+  buildCheckliste();
+  updateKosten();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ============================================================
+// EXPORT TXT
+// ============================================================
+function exportTXT() {
+  const d = gatherData();
+  const f = d.fields;
+  const lines = [];
+  lines.push('RENOVIERUNGSPLANER');
+  lines.push('==================');
+  lines.push(`Projekt: ${f.pname || '–'}`);
+  lines.push(`ID: ${f.pid}`);
+  lines.push(`Objekt: ${f.ostr}, ${f.oplz} ${f.oort} (${f.otyp || ''})`);
+  lines.push(`Fläche: ${f.flaeche ? f.flaeche + ' m²' : '–'}`);
+  lines.push(`Zeitraum: ${f.pstart || '–'} bis ${f.pende || '–'}`);
+  lines.push(`Budget: ${f.budget ? fmt(parseFloat(f.budget)) : '–'}`);
+  lines.push(`Kontakt: ${f.kname || '–'}, ${f.ktel || ''}, ${f.kemail || ''}`);
+  lines.push('');
+
+  d.rooms.forEach((r, i) => {
+    lines.push(`--- Raum ${i + 1}: ${r.typ || 'Unbenannt'} ${r.m2 ? '(' + r.m2 + ' m²)' : ''} ---`);
+    r.massnahmen.forEach(m => {
+      if (m.desc) lines.push(`  ${m.desc} | ${m.hw || 'kein HW'} | geplant: ${m.kgeplant ? fmt(parseFloat(m.kgeplant)) : '–'} | tatsächl.: ${m.ktats ? fmt(parseFloat(m.ktats)) : '–'} | ${m.status} | Prio: ${m.prio}`);
+    });
+    lines.push('');
+  });
+
+  lines.push('--- Handwerker ---');
+  d.handwerker.forEach(h => {
+    if (h.name) lines.push(`  ${h.name} (${h.gewerk || '–'}) | ${h.tel || ''} | Angebot: ${h.angebot ? fmt(parseFloat(h.angebot)) : '–'} | ${h.status} | ${h.rating ? h.rating + '/5' : ''}`);
+  });
+
+  lines.push('');
+  lines.push('--- Notizen ---');
+  lines.push(d.notizen || '');
+  lines.push('');
+  lines.push(`Erstellt: ${new Date().toLocaleString('de-DE')}`);
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Renovierungsplaner-${d.id || 'export'}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// EXPORT WORD
+// ============================================================
+function exportWord() {
+  const d = gatherData();
+  const f = d.fields;
+
+  const roomsHTML = d.rooms.map((r, i) => {
+    const massHTML = r.massnahmen.filter(m => m.desc).map(m => `
+      <tr>
+        <td style="padding:6px 8px;">${m.desc}</td>
+        <td style="padding:6px 8px;">${m.hw || '–'}</td>
+        <td style="padding:6px 8px;text-align:right;">${m.kgeplant ? fmt(parseFloat(m.kgeplant)) : '–'}</td>
+        <td style="padding:6px 8px;text-align:right;">${m.ktats ? fmt(parseFloat(m.ktats)) : '–'}</td>
+        <td style="padding:6px 8px;">${m.status}</td>
+        <td style="padding:6px 8px;">${m.prio}</td>
+      </tr>`).join('');
+    return `
+      <h3 style="margin:16px 0 6px;color:#1c2b3a;">Raum ${i + 1}: ${r.typ || 'Unbenannt'} ${r.m2 ? '(' + r.m2 + ' m²)' : ''}</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:#f5f5f3;">
+          <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #ddd;">Maßnahme</th>
+          <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #ddd;">Handwerker</th>
+          <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #ddd;">Geplant</th>
+          <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #ddd;">Tatsächlich</th>
+          <th style="padding:6px 8px;border-bottom:2px solid #ddd;">Status</th>
+          <th style="padding:6px 8px;border-bottom:2px solid #ddd;">Priorität</th>
+        </tr></thead>
+        <tbody>${massHTML || '<tr><td colspan="6" style="padding:6px 8px;color:#999;">Keine Maßnahmen eingetragen.</td></tr>'}</tbody>
+      </table>`;
+  }).join('');
+
+  const hwHTML = d.handwerker.filter(h => h.name).map(h => `
+    <tr>
+      <td style="padding:6px 8px;">${h.name}</td>
+      <td style="padding:6px 8px;">${h.gewerk || '–'}</td>
+      <td style="padding:6px 8px;">${h.tel || '–'}</td>
+      <td style="padding:6px 8px;text-align:right;">${h.angebot ? fmt(parseFloat(h.angebot)) : '–'}</td>
+      <td style="padding:6px 8px;">${h.status}</td>
+      <td style="padding:6px 8px;">${h.rating ? '★'.repeat(h.rating) : '–'}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; color: #1a1a1a; font-size: 13px; margin: 30px; }
+h1 { color: #1c2b3a; border-bottom: 3px solid #d4820a; padding-bottom: 8px; margin-bottom: 4px; }
+h2 { background: #1c2b3a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 14px; margin: 20px 0 10px; }
+h3 { color: #1c2b3a; }
+table { width: 100%; border-collapse: collapse; }
+td, th { border-bottom: 1px solid #eee; vertical-align: top; }
+.meta { color: #666; font-size: 12px; margin-bottom: 20px; }
+</style></head><body>
+<h1>Renovierungsplaner</h1>
+<div class="meta">${f.pname || ''} | ${f.ostr || ''}, ${f.oplz || ''} ${f.oort || ''} | ${f.pstart || ''} bis ${f.pende || ''}</div>
+
+<h2>1. Projektdaten</h2>
+<table><tbody>
+<tr><td style="width:40%;padding:5px 8px;color:#555;"><b>Projektname</b></td><td style="padding:5px 8px;">${f.pname || '–'}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Adresse</b></td><td style="padding:5px 8px;">${f.ostr || ''}, ${f.oplz || ''} ${f.oort || ''}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Objekttyp</b></td><td style="padding:5px 8px;">${f.otyp || '–'}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Wohnfläche</b></td><td style="padding:5px 8px;">${f.flaeche ? f.flaeche + ' m²' : '–'}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Zeitraum</b></td><td style="padding:5px 8px;">${f.pstart || '–'} bis ${f.pende || '–'}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Budget</b></td><td style="padding:5px 8px;">${f.budget ? fmt(parseFloat(f.budget)) : '–'}</td></tr>
+<tr><td style="padding:5px 8px;color:#555;"><b>Kontakt</b></td><td style="padding:5px 8px;">${f.kname || '–'}, ${f.ktel || ''}, ${f.kemail || ''}</td></tr>
+</tbody></table>
+
+<h2>2. Raumplaner</h2>
+${roomsHTML || '<p style="color:#999;">Keine Räume eingetragen.</p>'}
+
+<h2>3. Handwerkerliste</h2>
+<table>
+  <thead><tr style="background:#f5f5f3;">
+    <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #ddd;">Name / Firma</th>
+    <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #ddd;">Gewerk</th>
+    <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #ddd;">Telefon</th>
+    <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #ddd;">Angebot</th>
+    <th style="padding:6px 8px;border-bottom:2px solid #ddd;">Status</th>
+    <th style="padding:6px 8px;border-bottom:2px solid #ddd;">Bewertung</th>
+  </tr></thead>
+  <tbody>${hwHTML || '<tr><td colspan="6" style="padding:6px 8px;color:#999;">Keine Handwerker eingetragen.</td></tr>'}</tbody>
+</table>
+
+<h2>4. Notizen</h2>
+<p style="white-space:pre-wrap;">${d.notizen || '–'}</p>
+
+<p style="color:#aaa;font-size:11px;margin-top:30px;">Erstellt am ${new Date().toLocaleString('de-DE')}</p>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Renovierungsplaner-${d.id || 'export'}.doc`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>

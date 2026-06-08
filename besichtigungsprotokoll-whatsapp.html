@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besichtigungsprotokoll – Haushaltsauflösung</title>
+<style>
+:root {
+  --bg: #f2f2f0;
+  --card: #ffffff;
+  --primary: #1c2b3a;
+  --accent: #d4820a;
+  --accent-light: #f5a623;
+  --text: #1a1a1a;
+  --muted: #666;
+  --border: #ddd;
+  --success: #2d8a4e;
+  --danger: #c0392b;
+  --radius: 10px;
+  --shadow: 0 2px 14px rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- HEADER ---- */
+header {
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+}
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.header-icon {
+  width: 40px; height: 40px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.header-title { font-size: 18px; font-weight: 700; }
+.header-sub { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 1px; }
+.header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.hamburger {
+  display: none;
+  background: rgba(255,255,255,.13);
+  border: 2px solid rgba(255,255,255,.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 20px;
+  width: 44px; height: 44px;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  background: var(--primary);
+  flex-direction: column;
+  gap: 0;
+  z-index: 300;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .btn {
+  width: 100%;
+  justify-content: flex-start;
+  font-size: 15px;
+  border-radius: 0;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+@media (max-width: 600px) {
+  .hamburger { display: flex; }
+  .header-btns { display: none; }
+  .header-inner { flex-wrap: nowrap; align-items: center; }
+}
+
+/* ---- MAIN ---- */
+main { max-width: 1000px; margin: 0 auto; padding: 92px 16px 100px; }
+
+/* ---- SECTION ---- */
+.section {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.section-head {
+  background: var(--primary);
+  color: #fff;
+  padding: 13px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-num {
+  background: var(--accent);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
+.section-body { padding: 20px; }
+
+/* ---- GRID ---- */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+.span2 { grid-column: span 2; }
+.span3 { grid-column: span 3; }
+.spanfull { grid-column: 1/-1; }
+
+/* ---- FIELDS ---- */
+.f { display: flex; flex-direction: column; gap: 6px; }
+label.fl {
+  font-size: 12px; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+input[type=text], input[type=number], input[type=date],
+input[type=tel], input[type=email], select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  background: #fff;
+  -webkit-appearance: none;
+  transition: border-color .15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+input[readonly] { background: #f5f5f5; color: #999; }
+textarea { min-height: 90px; resize: vertical; }
+
+/* ---- OBJEKTTYP TOGGLE ---- */
+.objtyp-toggle {
+  display: flex; gap: 10px; margin-bottom: 4px;
+}
+.objtyp-btn {
+  flex: 1; padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: #fff; cursor: pointer;
+  text-align: center; font-size: 16px; font-weight: 600;
+  transition: all .15s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.objtyp-btn .ot-icon { font-size: 26px; }
+.objtyp-btn:hover { border-color: var(--accent); }
+.objtyp-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ---- RATING ---- */
+.rating { display: flex; gap: 5px; }
+.rb {
+  flex: 1; padding: 10px 4px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff; cursor: pointer;
+  text-align: center; font-size: 13px; font-weight: 700;
+  transition: all .15s; min-height: 48px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+}
+.rb small { font-size: 10px; font-weight: 400; opacity: .7; }
+.rb:hover { border-color: var(--accent); }
+.rb.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ---- CHECK PILLS ---- */
+.checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.cp {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer; font-size: 14px;
+  transition: all .15s; min-height: 44px;
+  user-select: none;
+}
+.cp:hover { border-color: var(--accent); }
+.cp input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.cp.on { background: #fff8f0; border-color: var(--accent); }
+
+/* ---- RADIO PILLS ---- */
+.radios { display: flex; gap: 8px; flex-wrap: wrap; }
+.rp {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer; font-size: 15px;
+  transition: all .15s; min-height: 44px;
+}
+.rp input[type=radio] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 18px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all .15s; min-height: 44px;
+  white-space: nowrap; font-family: inherit;
+}
+.btn-acc { background: var(--accent); color: #fff; }
+.btn-acc:hover { background: #b86e08; }
+.btn-ghost { background: rgba(255,255,255,.13); color: #fff; border: 2px solid rgba(255,255,255,.3); }
+.btn-ghost:hover { background: rgba(255,255,255,.22); }
+.btn-ok { background: var(--success); color: #fff; }
+.btn-bad { background: var(--danger); color: #fff; }
+.btn-out { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+.btn-out:hover { background: var(--accent); color: #fff; }
+.btn-sm { padding: 7px 12px; font-size: 13px; min-height: 36px; }
+.btn-xs { padding: 5px 10px; font-size: 12px; min-height: 32px; }
+.btn-wa { background: #1a9e4a; color: #fff; border: none; }
+.btn-wa:hover { background: #157a3a; }
+
+/* ---- DIVIDER ---- */
+hr.div { border: none; border-top: 1px solid #eee; margin: 16px 0; }
+.sub-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted); margin: 16px 0 10px;
+}
+
+/* ---- ROOM CARD ---- */
+.room-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.room-head {
+  background: #f7f7f5; padding: 11px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.room-num {
+  background: var(--primary); color: #fff;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.room-body { padding: 14px; }
+.room-select {
+  font-size: 15px; font-weight: 600;
+  border: none; background: transparent; cursor: pointer;
+  padding: 4px; color: var(--text);
+}
+
+/* ---- RESELL TABLE ---- */
+.resell-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 110px auto;
+  gap: 8px; align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.resell-row:last-child { border-bottom: none; }
+
+/* ---- PRICE TABLE ---- */
+.ptable { width: 100%; border-collapse: collapse; }
+.ptable td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  vertical-align: middle;
+}
+.ptable td:first-child { color: var(--muted); }
+.ptable td:last-child { text-align: right; }
+.ptable td input {
+  max-width: 150px; text-align: right;
+  font-weight: 600;
+}
+.ptrow-total td { font-weight: 700; font-size: 17px; border-top: 2px solid var(--primary); border-bottom: none; color: var(--primary); }
+.price-box {
+  background: var(--primary); color: #fff;
+  border-radius: var(--radius); padding: 20px;
+  margin-top: 16px;
+}
+.price-final {
+  font-size: 34px; font-weight: 800;
+  color: var(--accent-light);
+}
+
+/* ---- CANVAS ---- */
+.canvas-wrap {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden; background: #fff;
+}
+.canvas-bar {
+  display: flex; gap: 8px; padding: 10px 12px;
+  background: #f7f7f5; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; align-items: center;
+}
+canvas {
+  display: block; width: 100%;
+  touch-action: none; cursor: crosshair;
+}
+
+/* ---- INFO BOX ---- */
+.infobox {
+  background: #fff8f0; border: 1px solid #f5d8a0;
+  border-radius: 8px; padding: 11px 14px;
+  font-size: 14px; color: #7a5000;
+  margin-bottom: 14px;
+}
+
+/* ---- MODAL ---- */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); z-index: 500;
+  padding: 20px; overflow-y: auto;
+}
+.overlay.show { display: flex; align-items: flex-start; justify-content: center; }
+.modal {
+  background: #fff; border-radius: 12px;
+  max-width: 620px; width: 100%; margin: auto;
+  overflow: hidden;
+}
+.modal-head {
+  background: var(--primary); color: #fff;
+  padding: 15px 20px; font-weight: 700;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-close {
+  background: none; border: none; color: #fff;
+  font-size: 20px; cursor: pointer; line-height: 1;
+}
+.modal-body { padding: 20px; }
+.proto-list { list-style: none; }
+.proto-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px; border-bottom: 1px solid #eee; gap: 12px;
+}
+.proto-item:last-child { border-bottom: none; }
+.proto-meta { font-size: 13px; color: #999; margin-top: 2px; }
+
+/* ---- PRINT ---- */
+@media print {
+  @page { margin: 15mm; }
+  html, body { margin: 0 !important; padding: 0 !important; }
+  header { display: none !important; }
+  main { padding-top: 10px !important; }
+  .noprint { display: none !important; }
+  .section { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  body { background: #fff; }
+  .canvas-wrap { border: 1px solid #ccc; }
+  .overlay { display: none !important; }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 700px) {
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .span2, .span3, .spanfull { grid-column: span 1; }
+  .resell-row { grid-template-columns: 1fr auto; }
+  .resell-row input:nth-child(2),
+  .resell-row div { display: none; }
+}
+@media (min-width: 700px) and (max-width: 900px) {
+  .g4 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div>
+        <div class="header-title">Besichtigungsprotokoll</div>
+        <div class="header-sub">Haushaltsauflösung &amp; Entrümpelung</div>
+      </div>
+    </div>
+    <div class="header-btns noprint">
+      <button class="btn btn-ghost btn-sm" onclick="showProtocols()">📋 Protokolle</button>
+      <button class="btn btn-ghost btn-sm" onclick="showTagesberichtDialog()">📊 Tagesbericht</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveProtocol()" id="save-btn">💾 Speichern</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveToFile()">⬇ Datei</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer;">⬆ Laden<input type="file" accept=".json" style="display:none;" onchange="loadFromFile(event)"></label>
+      <button class="btn btn-ghost btn-sm" onclick="newProtocol()">+ Neu</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Drucken</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportTXT()">📝 TXT</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportWord()">📃 Word</button>
+      <button class="btn btn-acc btn-sm" onclick="exportPDF()">📄 PDF</button>
+      <button class="btn btn-wa btn-sm" onclick="sendWhatsApp()">💬 WhatsApp</button>
+    </div>
+    <button class="hamburger noprint" onclick="toggleMenu()" id="hamburger-btn">☰</button>
+  </div>
+  <div class="mobile-menu noprint" id="mobile-menu">
+    <button class="btn btn-ghost btn-sm" onclick="showProtocols();toggleMenu()">📋 Protokolle</button>
+    <button class="btn btn-ghost btn-sm" onclick="showTagesberichtDialog();toggleMenu()">📊 Tagesbericht</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveProtocol();toggleMenu()" id="save-btn-mobile">💾 Speichern</button>
+    <button class="btn btn-ghost btn-sm" onclick="saveToFile();toggleMenu()">⬇ Als Datei speichern</button>
+    <label class="btn btn-ghost btn-sm" style="cursor:pointer;">⬆ Datei laden<input type="file" accept=".json" style="display:none;" onchange="loadFromFile(event);toggleMenu()"></label>
+    <button class="btn btn-ghost btn-sm" onclick="newProtocol();toggleMenu()">+ Neues Protokoll</button>
+    <button class="btn btn-ghost btn-sm" onclick="window.print();toggleMenu()">🖨️ Drucken</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportTXT();toggleMenu()">📝 Als TXT exportieren</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportWord();toggleMenu()">📃 Als Word exportieren</button>
+    <button class="btn btn-acc btn-sm" onclick="exportPDF();toggleMenu()">📄 Als PDF exportieren</button>
+    <button class="btn btn-wa btn-sm" onclick="sendWhatsApp();toggleMenu()">💬 WhatsApp senden</button>
+  </div>
+</header>
+
+<main>
+<form id="prot" autocomplete="on">
+
+<!-- 1: AUFTRAGS- & KUNDENDATEN -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">1</div> Auftrags- &amp; Kundendaten</div>
+  <div class="section-body">
+    <div class="g3">
+      <div class="f">
+        <label class="fl">Protokoll-Nr.</label>
+        <input type="text" id="nr" readonly>
+      </div>
+      <div class="f">
+        <label class="fl">Datum der Besichtigung</label>
+        <input type="date" id="datum">
+      </div>
+      <div class="f">
+        <label class="fl">Besichtigt von</label>
+        <input type="text" id="von" placeholder="Name des Mitarbeiters">
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Auftraggeber</div>
+
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Name / Firma</label>
+        <input type="text" id="kname" placeholder="Vor- und Nachname">
+      </div>
+      <div class="f">
+        <label class="fl">Telefon</label>
+        <input type="tel" id="ktel" placeholder="+49 ...">
+      </div>
+      <div class="f">
+        <label class="fl">E-Mail</label>
+        <input type="email" id="kemail" placeholder="email@beispiel.de">
+      </div>
+      <div class="f">
+        <label class="fl">Beziehung zum Objekt</label>
+        <select id="kbez">
+          <option value="">Bitte wählen</option>
+          <option>Eigentümer</option>
+          <option>Erbe / Nachkomme</option>
+          <option>Verwalter / Vermieter</option>
+          <option>Bevollmächtigter</option>
+          <option>Nachlassverwalter</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Rechnungsadresse</div>
+
+    <div class="g2" style="margin-bottom: 12px;">
+      <div class="f span2">
+        <label class="fl">Name / Firma (Rechnung)</label>
+        <input type="text" id="rname" placeholder="Rechnungsempfänger, leer lassen wenn identisch">
+      </div>
+      <div class="f span2">
+        <label class="fl">Straße &amp; Hausnummer</label>
+        <input type="text" id="rstr" placeholder="Rechnungsstraße 1, leer lassen wenn identisch">
+      </div>
+      <div class="f">
+        <label class="fl">PLZ</label>
+        <input type="text" id="rplz" placeholder="12345">
+      </div>
+      <div class="f">
+        <label class="fl">Ort</label>
+        <input type="text" id="rort" placeholder="Ort">
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Objekt-Adresse</div>
+
+    <div class="f" style="margin-bottom: 16px;">
+      <label class="fl">Objekttyp</label>
+      <div class="objtyp-toggle">
+        <button type="button" class="objtyp-btn" id="ot-wohnung" onclick="setObjtyp('wohnung')">
+          <span class="ot-icon">🏢</span>Wohnung
+        </button>
+        <button type="button" class="objtyp-btn" id="ot-haus" onclick="setObjtyp('haus')">
+          <span class="ot-icon">🏠</span>Haus
+        </button>
+      </div>
+      <input type="hidden" id="objtyp-val">
+    </div>
+
+    <div class="g2">
+      <div class="f span2">
+        <label class="fl">Straße &amp; Hausnummer</label>
+        <input type="text" id="ostr" placeholder="Musterstraße 12">
+      </div>
+      <div class="f">
+        <label class="fl">PLZ</label>
+        <input type="text" id="oplz" placeholder="12345">
+      </div>
+      <div class="f">
+        <label class="fl">Ort</label>
+        <input type="text" id="oort" placeholder="Musterstadt">
+      </div>
+
+      <!-- Wohnung-spezifisch -->
+      <div class="f" id="field-etage">
+        <label class="fl">Etage</label>
+        <select id="oetage">
+          <option value="">Bitte wählen</option>
+          <option>Erdgeschoss</option>
+          <option>1. OG</option>
+          <option>2. OG</option>
+          <option>3. OG</option>
+          <option>4. OG</option>
+          <option>5. OG oder höher</option>
+          <option>Dachgeschoss</option>
+          <option>Keller</option>
+        </select>
+      </div>
+      <div class="f" id="field-aufzug">
+        <label class="fl">Aufzug vorhanden</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="aufzug" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="aufzug" value="klein"> Ja, klein</label>
+          <label class="rp"><input type="radio" name="aufzug" value="gross"> Ja, groß</label>
+        </div>
+      </div>
+      <div class="f" id="field-zimmer-wohnung">
+        <label class="fl">Zimmeranzahl</label>
+        <input type="number" id="oZimmerWohnung" placeholder="z.B. 3" min="1" max="20">
+      </div>
+
+      <!-- Haus-spezifisch -->
+      <div class="f" id="field-stockwerke" style="display:none;">
+        <label class="fl">Stockwerke (inkl. EG)</label>
+        <input type="number" id="oStockwerke" placeholder="z.B. 2" min="1" max="10">
+      </div>
+      <div class="f" id="field-zimmer-haus" style="display:none;">
+        <label class="fl">Zimmeranzahl gesamt</label>
+        <input type="number" id="oZimmerHaus" placeholder="z.B. 6" min="1" max="50">
+      </div>
+      <div class="f" id="field-keller" style="display:none;">
+        <label class="fl">Keller vorhanden</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="keller" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="keller" value="ja"> Ja</label>
+          <label class="rp"><input type="radio" name="keller" value="ja-vollkeller"> Ja, Vollkeller</label>
+        </div>
+      </div>
+      <div class="f" id="field-dachboden" style="display:none;">
+        <label class="fl">Dachboden vorhanden</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="dachboden" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="dachboden" value="ja"> Ja, ausgebaut</label>
+          <label class="rp"><input type="radio" name="dachboden" value="ja-roh"> Ja, Rohboden</label>
+        </div>
+      </div>
+      <div class="f" id="field-garage" style="display:none;">
+        <label class="fl">Garage / Carport</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="garage" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="garage" value="ja"> Ja</label>
+        </div>
+      </div>
+
+      <!-- Gemeinsam -->
+      <div class="f">
+        <label class="fl">Wohnfläche ca. (m²)</label>
+        <input type="number" id="flaeche" placeholder="z.B. 80" min="0" max="2000">
+      </div>
+      <div class="f">
+        <label class="fl">Baujahr (ca.)</label>
+        <input type="number" id="baujahr" placeholder="z.B. 1968" min="1800" max="2025">
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Gewünschter Auflösungstermin</label>
+        <input type="date" id="wtermin">
+      </div>
+      <div class="f">
+        <label class="fl">Terminflexibilität</label>
+        <select id="tflex">
+          <option value="">Bitte wählen</option>
+          <option>Fester Termin</option>
+          <option>Flexibel (1–2 Wochen)</option>
+          <option>Flexibel (bis 1 Monat)</option>
+          <option>Sehr flexibel</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: RAUMERFASSUNG -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">2</div> Raumerfassung</div>
+  <div class="section-body">
+    <div id="raeume"></div>
+    <button type="button" class="btn btn-acc noprint" onclick="addRaum()">＋ Raum hinzufügen</button>
+  </div>
+</div>
+
+<!-- 3: ZUSTAND & BESONDERHEITEN -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">3</div> Gesamtzustand &amp; Besonderheiten</div>
+  <div class="section-body">
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Gesamtverschmutzung</label>
+        <div class="rating" id="rat-gesamt">
+          <button type="button" class="rb" data-v="1" onclick="setRat('gesamt',1)">1<br><small>Sauber</small></button>
+          <button type="button" class="rb" data-v="2" onclick="setRat('gesamt',2)">2<br><small>Leicht</small></button>
+          <button type="button" class="rb" data-v="3" onclick="setRat('gesamt',3)">3<br><small>Mittel</small></button>
+          <button type="button" class="rb" data-v="4" onclick="setRat('gesamt',4)">4<br><small>Stark</small></button>
+          <button type="button" class="rb" data-v="5" onclick="setRat('gesamt',5)">5<br><small>Extrem</small></button>
+        </div>
+        <input type="hidden" id="rat-gesamt-v">
+      </div>
+      <div class="f">
+        <label class="fl">Geruch</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="geruch" value="kein"> Kein</label>
+          <label class="rp"><input type="radio" name="geruch" value="leicht"> Leicht</label>
+          <label class="rp"><input type="radio" name="geruch" value="stark"> Stark</label>
+          <label class="rp"><input type="radio" name="geruch" value="sehr-stark"> Sehr stark</label>
+        </div>
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Schädlinge / Ungeziefer</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="schaedl" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="schaedl" value="verdacht"> Verdacht</label>
+          <label class="rp"><input type="radio" name="schaedl" value="ja"> Ja</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Art der Schädlinge (falls vorhanden)</label>
+        <input type="text" id="schaedlart" placeholder="z.B. Kakerlaken, Mäuse, Motten...">
+      </div>
+      <div class="f">
+        <label class="fl">Schimmel / Feuchtigkeit</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="schimmel" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="schimmel" value="verdacht"> Verdacht</label>
+          <label class="rp"><input type="radio" name="schimmel" value="leicht"> Leicht</label>
+          <label class="rp"><input type="radio" name="schimmel" value="stark"> Stark</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Tierhaltung (Haare, Geruch)</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="tiere" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="tiere" value="ja"> Ja</label>
+        </div>
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <div class="f">
+      <label class="fl">Sonstige Besonderheiten</label>
+      <textarea id="besonders" placeholder="z.B. schwer zugängliche Bereiche, Nachbarschaftshinweise, Zugangsbeschränkungen, besondere Wertsachen, emotionale Situation..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 4: VERWERTBARE MÖBEL -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">4</div> Verwertbare Möbel &amp; Gegenstände</div>
+  <div class="section-body">
+    <div class="infobox">Was kann verkauft oder gespendet werden? Schätzwert = realistischer Erlös. Dieser kann am Ende vom Angebot abgezogen werden.</div>
+    <div id="verwertbar"></div>
+    <button type="button" class="btn btn-acc noprint" onclick="addVerwertbar()" style="margin-top: 8px;">＋ Gegenstand hinzufügen</button>
+    <hr class="div">
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Geschätzter Gesamterlös Verwertung (€)</label>
+        <input type="number" id="erloes" placeholder="0" min="0" step="10" oninput="calc()" style="font-size: 22px; font-weight: 700; color: var(--success);">
+      </div>
+      <div class="f">
+        <label class="fl">Erlös verrechnen mit Angebot?</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="verrechnung" value="ja"> Ja, verrechnen</label>
+          <label class="rp"><input type="radio" name="verrechnung" value="nein"> Nein, Kunde behält</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5: ENTSORGUNG -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">5</div> Entsorgung &amp; Müll</div>
+  <div class="section-body">
+    <div class="g4">
+      <div class="f">
+        <label class="fl">Sperrmüll (ca. m³)</label>
+        <input type="number" id="spm3" placeholder="0" min="0" max="500">
+      </div>
+      <div class="f">
+        <label class="fl">Anhänger- / LKW-Ladungen</label>
+        <input type="number" id="anhaenger" placeholder="0" min="0" max="50">
+      </div>
+      <div class="f">
+        <label class="fl">Deponiefahrten</label>
+        <input type="number" id="deponie" placeholder="0" min="0" max="20">
+      </div>
+      <div class="f">
+        <label class="fl">Container benötigt</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="container" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="container" value="ja"> Ja</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-top: 16px;">
+      <div class="f">
+        <label class="fl">Elektroschrott</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="elek" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="elek" value="wenig"> Wenig</label>
+          <label class="rp"><input type="radio" name="elek" value="viel"> Viel</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Entsorgungskosten Schätzung (€)</label>
+        <input type="number" id="entkost" placeholder="0" min="0" step="50" oninput="calc()">
+      </div>
+    </div>
+
+    <hr class="div">
+    <div class="sub-label">Sondermüll</div>
+    <div class="f">
+      <label class="fl">Vorhandener Sondermüll (Mehrfachauswahl)</label>
+      <div class="checks" id="sond-checks">
+        <label class="cp"><input type="checkbox" value="farben" onchange="cs(this)"> Farben &amp; Lacke</label>
+        <label class="cp"><input type="checkbox" value="chemie" onchange="cs(this)"> Chemikalien / Reiniger</label>
+        <label class="cp"><input type="checkbox" value="batt" onchange="cs(this)"> Batterien / Akkus</label>
+        <label class="cp"><input type="checkbox" value="oel" onchange="cs(this)"> Öl / Kraftstoffe</label>
+        <label class="cp"><input type="checkbox" value="asbest" onchange="cs(this)"> Asbest (Verdacht)</label>
+        <label class="cp"><input type="checkbox" value="medi" onchange="cs(this)"> Medikamente</label>
+        <label class="cp"><input type="checkbox" value="gas" onchange="cs(this)"> Gasflaschen</label>
+        <label class="cp"><input type="checkbox" value="kuehl" onchange="cs(this)"> Kühlgeräte (FCKW)</label>
+        <label class="cp"><input type="checkbox" value="pcb" onchange="cs(this)"> PCB-haltige Bauteile</label>
+        <label class="cp"><input type="checkbox" value="spreng" onchange="cs(this)"> Sprengmittel (Verdacht)</label>
+        <label class="cp"><input type="checkbox" value="crt" onchange="cs(this)"> Röhrenbildschirme (CRT)</label>
+        <label class="cp"><input type="checkbox" value="asbest-platten" onchange="cs(this)"> Asbestplatten / -dach</label>
+      </div>
+    </div>
+    <div class="f" style="margin-top: 12px;">
+      <label class="fl">Sondermüll-Anmerkungen</label>
+      <input type="text" id="sondnotiz" placeholder="Details, Mengen, Lagerort...">
+    </div>
+  </div>
+</div>
+
+<!-- 6: LOGISTIK -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">6</div> Logistik &amp; Zugänglichkeit</div>
+  <div class="section-body">
+    <div class="g2">
+      <div class="f">
+        <label class="fl">Parkmöglichkeiten</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="parken" value="gut"> Gut</label>
+          <label class="rp"><input type="radio" name="parken" value="einschr"> Eingeschränkt</label>
+          <label class="rp"><input type="radio" name="parken" value="schwer"> Schwierig</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Halteverbotszone erforderlich</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="hvz" value="nein"> Nein</label>
+          <label class="rp"><input type="radio" name="hvz" value="evtl"> Evtl.</label>
+          <label class="rp"><input type="radio" name="hvz" value="ja"> Ja</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Treppenhaus</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="treppe" value="breit"> Breit</label>
+          <label class="rp"><input type="radio" name="treppe" value="normal"> Normal</label>
+          <label class="rp"><input type="radio" name="treppe" value="eng"> Eng</label>
+          <label class="rp"><input type="radio" name="treppe" value="sehr-eng"> Sehr eng</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Zufahrt zum Objekt</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="zufahrt" value="direkt"> Direkt</label>
+          <label class="rp"><input type="radio" name="zufahrt" value="hof"> Über Hof</label>
+          <label class="rp"><input type="radio" name="zufahrt" value="schwer"> Schwierig</label>
+        </div>
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <div class="g3">
+      <div class="f">
+        <label class="fl">Geschätzte Arbeitsstunden gesamt</label>
+        <input type="number" id="stunden" placeholder="0" min="0" oninput="calc()">
+      </div>
+      <div class="f">
+        <label class="fl">Benötigte Personen</label>
+        <input type="number" id="personen" placeholder="2" min="1" max="20">
+      </div>
+      <div class="f">
+        <label class="fl">Geschätzte Arbeitstage</label>
+        <input type="number" id="tage" placeholder="0" min="0" max="30">
+      </div>
+      <div class="f">
+        <label class="fl">Kleintransporter</label>
+        <input type="number" id="fzkl" placeholder="0" min="0" max="10">
+      </div>
+      <div class="f">
+        <label class="fl">LKW</label>
+        <input type="number" id="fzlkw" placeholder="0" min="0" max="10">
+      </div>
+      <div class="f">
+        <label class="fl">Anhänger</label>
+        <input type="number" id="fzanh" placeholder="0" min="0" max="10">
+      </div>
+    </div>
+
+    <div class="f" style="margin-top: 14px;">
+      <label class="fl">Logistik-Anmerkungen</label>
+      <input type="text" id="lognotiz" placeholder="Zugangscode, Schlüssel, Sondersituationen, Nachbarschaft...">
+    </div>
+  </div>
+</div>
+
+<!-- 7: PREISKALKULATION -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">7</div> Preiskalkulation</div>
+  <div class="section-body">
+    <div class="g3" style="margin-bottom: 16px;">
+      <div class="f">
+        <label class="fl">Stundensatz (€/h)</label>
+        <input type="number" id="satz" value="60" min="0" step="5" oninput="calc()">
+      </div>
+      <div class="f">
+        <label class="fl">Stunden gesamt (auto)</label>
+        <input type="number" id="std-anz" readonly placeholder="—">
+      </div>
+      <div class="f">
+        <label class="fl">Arbeitskosten (auto)</label>
+        <input type="number" id="akost" readonly placeholder="—" style="font-weight:700;">
+      </div>
+    </div>
+
+    <table class="ptable">
+      <tr>
+        <td>Arbeitskosten</td>
+        <td><input type="number" id="p-arbeit" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td>Entsorgungskosten</td>
+        <td><input type="number" id="p-entsor" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td>Anfahrt / Fahrtkosten</td>
+        <td><input type="number" id="p-fahrt" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td>Reinigung (falls beauftragt)</td>
+        <td><input type="number" id="p-reinig" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td>Sondermüll-Entsorgung</td>
+        <td><input type="number" id="p-sond" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td>Sonstiges</td>
+        <td><input type="number" id="p-sonst" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr>
+        <td style="color: var(--success);">Verwertungserlös (Abzug)</td>
+        <td>− <input type="number" id="p-erloes" placeholder="0" min="0" step="10" oninput="calcSum()"> €</td>
+      </tr>
+      <tr class="ptrow-total">
+        <td>NETTO Gesamt</td>
+        <td id="netto-out">0,00 €</td>
+      </tr>
+      <tr>
+        <td>Mehrwertsteuer</td>
+        <td>
+          <select id="mwst" onchange="calcSum()">
+            <option value="0">Ohne MwSt. (Kleinunternehmer)</option>
+            <option value="19">19 % MwSt.</option>
+            <option value="7">7 % MwSt.</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>MwSt.-Betrag</td>
+        <td id="mwst-out">—</td>
+      </tr>
+    </table>
+
+    <div class="price-box">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div style="font-size: 12px; opacity: .6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Angebotspreis (Brutto)</div>
+          <div class="price-final" id="brutto-out">0,00 €</div>
+        </div>
+        <div class="f" style="min-width: 180px;">
+          <label class="fl" style="color: rgba(255,255,255,.6);">Preisnachlass (€)</label>
+          <input type="number" id="nachlass" placeholder="0" min="0" step="10" oninput="calcSum()" style="max-width: 180px;">
+        </div>
+      </div>
+      <div id="endbox" style="display:none; border-top: 1px solid rgba(255,255,255,.2); margin-top: 16px; padding-top: 16px;">
+        <div style="font-size: 12px; opacity: .6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Endpreis nach Nachlass</div>
+        <div style="font-size: 28px; font-weight: 800;" id="end-out">0,00 €</div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-top: 16px;">
+      <div class="f">
+        <label class="fl">Zahlungsart</label>
+        <div class="radios">
+          <label class="rp"><input type="radio" name="zahlung" value="bar"> Bar</label>
+          <label class="rp"><input type="radio" name="zahlung" value="uw"> Überweisung</label>
+          <label class="rp"><input type="radio" name="zahlung" value="beides"> Beides</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="fl">Angebot gültig bis</label>
+        <input type="date" id="agueltig">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8: NOTIZEN & SKIZZE -->
+<div class="section">
+  <div class="section-head"><div class="sec-num">8</div> Notizen &amp; Freihandskizze</div>
+  <div class="section-body">
+    <div class="f" style="margin-bottom: 16px;">
+      <label class="fl">Zusätzliche Notizen</label>
+      <textarea id="notizen" placeholder="Weitere Absprachen, offene Fragen, besondere Vereinbarungen..."></textarea>
+    </div>
+    <label class="fl" style="margin-bottom: 8px; display: block;">Freihandskizze (Grundriss, Markierungen, Notizen mit Stift)</label>
+    <div class="canvas-wrap">
+      <div class="canvas-bar noprint">
+        <button type="button" class="btn btn-sm" id="btn-pen" onclick="setTool('pen')">✏️ Stift</button>
+        <button type="button" class="btn btn-sm" id="btn-erase" onclick="setTool('erase')" style="background:#fff; color:#333; border: 2px solid #ccc;">◻ Radierer</button>
+        <div style="width:1px; height:28px; background:#ddd; margin: 0 4px;"></div>
+        <input type="color" id="penCol" value="#1c2b3a" title="Stiftfarbe" style="width:38px; height:34px; border: 2px solid #ddd; border-radius:6px; cursor:pointer; padding:2px;">
+        <select id="penSz" style="height:34px; padding:0 8px; border-radius:6px; border:2px solid #ddd; font-size:14px;">
+          <option value="1.5">Sehr dünn</option>
+          <option value="3" selected>Dünn</option>
+          <option value="6">Normal</option>
+          <option value="12">Dick</option>
+          <option value="24">Sehr dick</option>
+        </select>
+        <div style="width:1px; height:28px; background:#ddd; margin: 0 4px;"></div>
+        <button type="button" class="btn btn-sm" onclick="undoStroke()" style="background:#fff; color:#333; border: 2px solid #ccc;">↩ Rückgängig</button>
+        <button type="button" class="btn btn-sm btn-bad" onclick="clearCanvas()">🗑 Leeren</button>
+      </div>
+      <canvas id="sketch" height="420"></canvas>
+    </div>
+  </div>
+</div>
+
+</form>
+</main>
+
+<footer style="text-align:center;padding:20px 16px 30px;font-size:11px;color:#aaa;max-width:1000px;margin:0 auto;border-top:1px solid #eee;">
+  © 2026 Lowmansland.de. Alle Rechte vorbehalten. Dieses Tool ist lizenziert, nicht verkauft. Nutzung ausschließlich durch den Lizenznehmer. Vervielfältigung und Weitergabe ohne Genehmigung untersagt.
+</footer>
+
+<!-- MODAL: Tagesbericht -->
+<div class="overlay" id="modal-tagesbericht">
+  <div class="modal">
+    <div class="modal-head">
+      <span>📊 Tagesbericht erstellen</span>
+      <button class="modal-close" onclick="document.getElementById('modal-tagesbericht').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="f" style="margin-bottom:16px;">
+        <label class="fl">Datum auswählen</label>
+        <input type="date" id="tb-datum" style="font-size:16px;">
+      </div>
+      <div id="tb-preview" style="font-size:14px;color:#666;margin-bottom:16px;"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-acc" onclick="exportTagesbericht('pdf')">🖨️ Als PDF drucken</button>
+        <button class="btn btn-out" onclick="exportTagesbericht('word')">📃 Als Word</button>
+        <button class="btn btn-out" onclick="exportTagesbericht('txt')">📝 Als TXT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Gespeicherte Protokolle -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <span>Gespeicherte Protokolle</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <ul class="proto-list" id="proto-list"></ul>
+      <div id="no-protos" style="text-align:center; color:#bbb; padding:24px; display:none;">Noch keine gespeicherten Protokolle.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let canvas, ctx, tool = 'pen', strokes = [], curStroke = null;
+
+const ROOM_TYPES = [
+  'Wohnzimmer','Schlafzimmer','Kinderzimmer','Küche','Badezimmer','WC / Gäste-WC',
+  'Flur / Diele','Arbeitszimmer / Büro','Esszimmer','Keller','Dachboden',
+  'Garage / Stellplatz','Abstellraum','Balkon / Terrasse','Garten / Schuppen','Sonstiges'
+];
+const ROOM_CONTENTS = [
+  'Möbel (groß)','Möbel (klein)','Elektrogeräte','Kleidung / Textilien',
+  'Bücher / Medien','Geschirr / Küchensachen','Werkzeug','Spielzeug / Hobby',
+  'Akten / Papiere','Dekoartikel','Sportausrüstung','Gartengeräte',
+  'Lebensmittel (verderblich)','Müll / Unrat','Kunstgegenstände'
+];
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('datum').value = today;
+  const g = new Date(); g.setDate(g.getDate() + 14);
+  document.getElementById('agueltig').value = g.toISOString().split('T')[0];
+  genId();
+  addRaum();
+  addVerwertbar();
+  initCanvas();
+});
+
+// ============================================================
+// ID
+// ============================================================
+function genId() {
+  const d = new Date();
+  const id = `HHA-${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}`;
+  document.getElementById('nr').value = id;
+}
+function p2(n) { return String(n).padStart(2,'0'); }
+
+// ============================================================
+// WHATSAPP
+// ============================================================
+function sendWhatsApp() {
+  const tel = document.getElementById('ktel').value.trim();
+  const name = document.getElementById('kname').value.trim();
+  const ostr = document.getElementById('ostr').value.trim();
+  const oplz = document.getElementById('oplz').value.trim();
+  const oort = document.getElementById('oort').value.trim();
+  const nr = document.getElementById('nr').value.trim();
+  const brutto = document.getElementById('brutto-out').textContent.trim();
+  const agueltig = document.getElementById('agueltig').value;
+
+  if (!tel) {
+    alert('Bitte zuerst die Telefonnummer des Kunden eintragen.');
+    return;
+  }
+
+  let phone = tel.replace(/[\s\-\(\)]/g, '');
+  if (phone.startsWith('+')) phone = phone.slice(1);
+  if (phone.startsWith('00')) phone = phone.slice(2);
+  if (phone.startsWith('0')) phone = '49' + phone.slice(1);
+
+  const adresse = [ostr, oplz, oort].filter(Boolean).join(', ');
+  const gueltigStr = agueltig ? new Date(agueltig).toLocaleDateString('de-DE') : '';
+
+  let message = 'Guten Tag';
+  if (name) message += ' ' + name;
+  message += ',\n\nvielen Dank für Ihre Anfrage zur Haushaltsauflösung';
+  if (adresse) message += ' in ' + adresse;
+  message += '.\n\nWir haben Ihr Besichtigungsprotokoll (' + nr + ') aufgenommen. Unser Angebot beläuft sich auf ' + brutto;
+  if (gueltigStr) message += ' (gültig bis ' + gueltigStr + ')';
+  message += '.\n\nGerne stehen wir für Rückfragen zur Verfügung und freuen uns auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen';
+
+  const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
+  window.open(url, '_blank');
+}
+
+// ============================================================
+// OBJEKTTYP
+// ============================================================
+function setObjtyp(typ) {
+  document.getElementById('objtyp-val').value = typ;
+  document.getElementById('ot-wohnung').classList.toggle('on', typ === 'wohnung');
+  document.getElementById('ot-haus').classList.toggle('on', typ === 'haus');
+
+  const wohnungFields = ['field-etage','field-aufzug','field-zimmer-wohnung'];
+  const hausFields = ['field-stockwerke','field-zimmer-haus','field-keller','field-dachboden','field-garage'];
+
+  wohnungFields.forEach(id => {
+    document.getElementById(id).style.display = typ === 'wohnung' ? '' : 'none';
+  });
+  hausFields.forEach(id => {
+    document.getElementById(id).style.display = typ === 'haus' ? '' : 'none';
+  });
+}
+
+// ============================================================
+// ROOMS
+// ============================================================
+let roomIdx = 0;
+function addRaum(data) {
+  const i = roomIdx++;
+  const div = document.createElement('div');
+  div.className = 'room-card';
+  div.id = `r${i}`;
+
+  const opts = ROOM_TYPES.map(t =>
+    `<option${data?.typ===t?' selected':''}>${t}</option>`).join('');
+
+  const contents = ROOM_CONTENTS.map(c => {
+    const chk = data?.inhalt?.includes(c) ? ' checked' : '';
+    return `<label class="cp${chk?' on':''}"><input type="checkbox" value="${c}"${chk} onchange="cs(this)"> ${c}</label>`;
+  }).join('');
+
+  div.innerHTML = `
+    <div class="room-head">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="room-num">${i+1}</div>
+        <select class="room-select" onchange="">
+          <option value="">Raumtyp wählen</option>${opts}
+        </select>
+      </div>
+      <button type="button" class="btn btn-xs btn-bad noprint" onclick="document.getElementById('r${i}').remove()">✕ Entfernen</button>
+    </div>
+    <div class="room-body">
+      <div class="g3" style="margin-bottom:14px;">
+        <div class="f">
+          <label class="fl">Größe</label>
+          <div class="radios">
+            <label class="rp"><input type="radio" name="rs${i}" value="S"${data?.sz==='S'?' checked':''}> S</label>
+            <label class="rp"><input type="radio" name="rs${i}" value="M"${data?.sz==='M'?' checked':''}> M</label>
+            <label class="rp"><input type="radio" name="rs${i}" value="L"${data?.sz==='L'?' checked':''}> L</label>
+            <label class="rp"><input type="radio" name="rs${i}" value="XL"${data?.sz==='XL'?' checked':''}> XL</label>
+          </div>
+        </div>
+        <div class="f">
+          <label class="fl">Verschmutzungsgrad</label>
+          <div class="rating" id="rat-r${i}">
+            ${[1,2,3,4,5].map(v=>`<button type="button" class="rb" data-v="${v}" onclick="setRat('r${i}',${v})">${v}</button>`).join('')}
+          </div>
+          <input type="hidden" id="rat-r${i}-v" value="${data?.schmutz||''}">
+        </div>
+        <div class="f">
+          <label class="fl">Fläche (ca. m²)</label>
+          <input type="number" placeholder="m²" min="0" max="500" value="${data?.m2||''}">
+        </div>
+      </div>
+      <div class="f" style="margin-bottom:12px;">
+        <label class="fl">Was ist auszuräumen?</label>
+        <div class="checks">${contents}</div>
+      </div>
+      <div class="f">
+        <label class="fl">Raum-Notizen</label>
+        <input type="text" placeholder="Besonderheiten, schwere Möbel, Sperrgut..." value="${data?.notiz||''}">
+      </div>
+    </div>`;
+
+  document.getElementById('raeume').appendChild(div);
+  if (data?.schmutz) setRat(`r${i}`, data.schmutz);
+}
+
+// ============================================================
+// RESELL ITEMS
+// ============================================================
+let vIdx = 0;
+function addVerwertbar(data) {
+  const i = vIdx++;
+  const div = document.createElement('div');
+  div.className = 'resell-row';
+  div.innerHTML = `
+    <input type="text" placeholder="Gegenstand (z.B. Eichentisch, Kühlschrank, Gemälde...)" value="${data?.name||''}">
+    <input type="number" placeholder="Anz." min="1" max="999" value="${data?.anzahl||''}">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <input type="number" placeholder="0" min="0" step="5" style="text-align:right;" value="${data?.wert||''}">
+      <span style="color:var(--muted);font-size:13px;white-space:nowrap;">€</span>
+    </div>
+    <button type="button" class="btn btn-xs btn-bad noprint" onclick="this.closest('.resell-row').remove()">✕</button>`;
+  document.getElementById('verwertbar').appendChild(div);
+}
+
+// ============================================================
+// RATINGS
+// ============================================================
+const rats = {};
+function setRat(id, v) {
+  rats[id] = v;
+  const c = document.getElementById(`rat-${id}`);
+  if (!c) return;
+  c.querySelectorAll('.rb').forEach(b => b.classList.toggle('on', parseInt(b.dataset.v) <= v));
+  const h = document.getElementById(`rat-${id}-v`);
+  if (h) h.value = v;
+}
+
+// ============================================================
+// CHECKBOX STYLE
+// ============================================================
+function cs(el) {
+  el.closest('.cp')?.classList.toggle('on', el.checked);
+}
+
+// ============================================================
+// PRICE CALC
+// ============================================================
+function calc() {
+  const std = parseFloat(document.getElementById('stunden').value) || 0;
+  const satz = parseFloat(document.getElementById('satz').value) || 0;
+  const ak = std * satz;
+  document.getElementById('std-anz').value = std || '';
+  document.getElementById('akost').value = ak || '';
+  document.getElementById('p-arbeit').value = ak || '';
+  const ek = parseFloat(document.getElementById('entkost').value) || 0;
+  document.getElementById('p-entsor').value = ek || '';
+  const er = parseFloat(document.getElementById('erloes').value) || 0;
+  document.getElementById('p-erloes').value = er || '';
+  calcSum();
+}
+
+function calcSum() {
+  const v = id => parseFloat(document.getElementById(id)?.value) || 0;
+  const netto = v('p-arbeit') + v('p-entsor') + v('p-fahrt') + v('p-reinig') + v('p-sond') + v('p-sonst') - v('p-erloes');
+  const mwstP = parseFloat(document.getElementById('mwst').value) || 0;
+  const mwst = netto * mwstP / 100;
+  const brutto = netto + mwst;
+  const nachlass = v('nachlass');
+  const end = brutto - nachlass;
+
+  document.getElementById('netto-out').textContent = fmt(netto);
+  document.getElementById('mwst-out').textContent = mwstP > 0 ? fmt(mwst) : '—';
+  document.getElementById('brutto-out').textContent = fmt(brutto);
+  document.getElementById('endbox').style.display = nachlass > 0 ? 'block' : 'none';
+  document.getElementById('end-out').textContent = fmt(end);
+}
+
+function fmt(n) {
+  return new Intl.NumberFormat('de-DE', { style:'currency', currency:'EUR' }).format(n);
+}
+
+// ============================================================
+// CANVAS
+// ============================================================
+function initCanvas() {
+  canvas = document.getElementById('sketch');
+  ctx = canvas.getContext('2d');
+  setCanvasSize();
+  window.addEventListener('resize', setCanvasSize);
+  canvas.addEventListener('pointerdown', onDown);
+  canvas.addEventListener('pointermove', onMove);
+  canvas.addEventListener('pointerup', onUp);
+  canvas.addEventListener('pointercancel', onUp);
+  setTool('pen');
+}
+
+function setCanvasSize() {
+  const w = canvas.parentElement.clientWidth;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = 420 * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '420px';
+  ctx.scale(dpr, dpr);
+  redraw();
+}
+
+function onDown(e) {
+  e.preventDefault();
+  canvas.setPointerCapture(e.pointerId);
+  const pos = pt(e);
+  curStroke = {
+    col: tool === 'erase' ? null : document.getElementById('penCol').value,
+    sz: tool === 'erase' ? 28 : parseFloat(document.getElementById('penSz').value),
+    erase: tool === 'erase',
+    pts: [pos]
+  };
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+}
+
+function onMove(e) {
+  if (!curStroke) return;
+  e.preventDefault();
+  const pos = pt(e);
+  curStroke.pts.push(pos);
+  paintStroke(curStroke);
+}
+
+function onUp() {
+  if (curStroke) { strokes.push(curStroke); curStroke = null; }
+}
+
+function pt(e) {
+  const r = canvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function paintStroke(s) {
+  if (s.pts.length < 2) return;
+  ctx.globalCompositeOperation = s.erase ? 'destination-out' : 'source-over';
+  ctx.strokeStyle = s.col || '#000';
+  ctx.lineWidth = s.sz;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const p = s.pts;
+  ctx.beginPath();
+  ctx.moveTo(p[0].x, p[0].y);
+  for (let i = 1; i < p.length; i++) ctx.lineTo(p[i].x, p[i].y);
+  ctx.stroke();
+}
+
+function redraw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.globalCompositeOperation = 'source-over';
+  strokes.forEach(s => paintStroke(s));
+}
+
+function undoStroke() { strokes.pop(); redraw(); }
+
+function clearCanvas() {
+  if (!confirm('Skizze wirklich löschen?')) return;
+  strokes = [];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function setTool(t) {
+  tool = t;
+  const bp = document.getElementById('btn-pen');
+  const be = document.getElementById('btn-erase');
+  bp.style.background = t === 'pen' ? 'var(--primary)' : '#fff';
+  bp.style.color = t === 'pen' ? '#fff' : '#333';
+  bp.style.border = t === 'pen' ? 'none' : '2px solid #ccc';
+  be.style.background = t === 'erase' ? 'var(--primary)' : '#fff';
+  be.style.color = t === 'erase' ? '#fff' : '#333';
+  be.style.border = t === 'erase' ? 'none' : '2px solid #ccc';
+}
+
+// ============================================================
+// STORAGE HELPER
+// ============================================================
+function lsGet(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; }
+  catch(e) { return fallback; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e) { return false; }
+}
+function lsRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+}
+
+// ============================================================
+// SAVE / LOAD
+// ============================================================
+function gatherData() {
+  const form = document.getElementById('prot');
+  const d = {
+    id: document.getElementById('nr').value,
+    ts: new Date().toISOString(),
+    canvas: canvas.toDataURL(),
+    ratings: { ...rats },
+    fields: {},
+    radios: {},
+    rooms: [],
+    verwertbar: [],
+    sondm: [],
+    objtyp: document.getElementById('objtyp-val').value
+  };
+
+  // Fields
+  form.querySelectorAll('[id]').forEach(el => {
+    if (['INPUT','SELECT','TEXTAREA'].includes(el.tagName) && !el.id.startsWith('rat-'))
+      d.fields[el.id] = el.value;
+  });
+
+  // Radios
+  form.querySelectorAll('input[type=radio]:checked').forEach(el => {
+    d.radios[el.name] = el.value;
+  });
+
+  // Sondermüll
+  document.querySelectorAll('#sond-checks input:checked').forEach(el => d.sondm.push(el.value));
+
+  // Rooms
+  document.querySelectorAll('.room-card').forEach(card => {
+    const sel = card.querySelector('select');
+    const rname = card.id.replace('r','');
+    d.rooms.push({
+      typ: sel?.value || '',
+      sz: card.querySelector('input[type=radio]:checked')?.value || '',
+      schmutz: rats[`r${rname}`] || '',
+      m2: card.querySelector('input[type=number]')?.value || '',
+      inhalt: [...card.querySelectorAll('input[type=checkbox]:checked')].map(e=>e.value),
+      notiz: card.querySelector('input[type=text]')?.value || ''
+    });
+  });
+
+  // Verwertbar
+  document.querySelectorAll('.resell-row').forEach(row => {
+    const ins = row.querySelectorAll('input');
+    d.verwertbar.push({ name: ins[0]?.value||'', anzahl: ins[1]?.value||'', wert: ins[2]?.value||'' });
+  });
+
+  return d;
+}
+
+function saveProtocol() {
+  const d = gatherData();
+  const list = lsGet('hh_list', []);
+  const idx = list.findIndex(p => p.id === d.id);
+  const meta = { id: d.id, ts: d.ts, name: d.fields.kname||'', addr: (d.fields.ostr||'') + ' ' + (d.fields.oort||'') };
+  if (idx >= 0) list[idx] = meta; else list.push(meta);
+  const ok = lsSet('hh_list', list) && lsSet(`hh_p_${d.id}`, d);
+  const btn = document.getElementById('save-btn');
+  btn.textContent = ok ? '✅ Gespeichert!' : '⚠️ Speichern nicht möglich';
+  setTimeout(() => btn.textContent = '💾 Speichern', 2200);
+}
+
+function showProtocols() {
+  const list = lsGet('hh_list', []).reverse();
+  const ul = document.getElementById('proto-list');
+  const no = document.getElementById('no-protos');
+  ul.innerHTML = '';
+  no.style.display = list.length ? 'none' : 'block';
+  list.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'proto-item';
+    li.innerHTML = `
+      <div>
+        <div style="font-weight:600;">${p.name||'Unbekannter Kunde'}</div>
+        <div class="proto-meta">${p.id} · ${p.addr.trim()||'keine Adresse'}</div>
+        <div class="proto-meta">${new Date(p.ts).toLocaleString('de-DE')}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-out" onclick="loadProto('${p.id}')">📂 Laden</button>
+        <button class="btn btn-sm btn-ghost" style="background:var(--primary);" onclick="printProto('${p.id}')">🖨️ Drucken</button>
+        <button class="btn btn-sm btn-acc" onclick="pdfProto('${p.id}')">📄 PDF</button>
+        <button class="btn btn-sm btn-ghost" style="background:var(--primary);" onclick="fileProto('${p.id}')">⬇ Datei</button>
+        <button class="btn btn-sm btn-ghost" style="background:var(--primary);" onclick="txtProto('${p.id}')">📝 TXT</button>
+        <button class="btn btn-sm btn-ghost" style="background:var(--primary);" onclick="wordProto('${p.id}')">📃 Word</button>
+        <button class="btn btn-sm btn-wa" onclick="waProto('${p.id}')">💬 WA</button>
+        <button class="btn btn-sm btn-bad" onclick="delProto('${p.id}')">🗑 Löschen</button>
+      </div>`;
+    ul.appendChild(li);
+  });
+  document.getElementById('modal').classList.add('show');
+}
+
+function loadProto(id) {
+  const d = lsGet(`hh_p_${id}`, {});
+  if (!d.id) return;
+  loadProto_data(d);
+}
+
+function loadProto_data(d) {
+
+  // Fields
+  Object.entries(d.fields||{}).forEach(([k,v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+
+  // Radios
+  Object.entries(d.radios||{}).forEach(([name, val]) => {
+    const el = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
+    if (el) el.checked = true;
+  });
+
+  // Sondermüll
+  document.querySelectorAll('#sond-checks input').forEach(el => {
+    el.checked = (d.sondm||[]).includes(el.value);
+    cs(el);
+  });
+
+  // Ratings
+  Object.entries(d.ratings||{}).forEach(([g,v]) => setRat(g, v));
+
+  // Objekttyp
+  if (d.objtyp) setObjtyp(d.objtyp);
+
+  // Rooms
+  document.getElementById('raeume').innerHTML = '';
+  roomIdx = 0;
+  (d.rooms||[]).forEach(r => addRaum(r));
+
+  // Verwertbar
+  document.getElementById('verwertbar').innerHTML = '';
+  vIdx = 0;
+  (d.verwertbar||[]).forEach(v => addVerwertbar(v));
+
+  // Canvas
+  if (d.canvas) {
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const dpr = window.devicePixelRatio||1;
+      ctx.drawImage(img, 0, 0, canvas.width/dpr, canvas.height/dpr);
+    };
+    img.src = d.canvas;
+    strokes = [];
+  }
+
+  closeModal();
+  calcSum();
+}
+
+function printProto(id) {
+  loadProto(id);
+  setTimeout(() => window.print(), 400);
+}
+
+function pdfProto(id) {
+  loadProto(id);
+  setTimeout(() => exportPDF(), 400);
+}
+
+function waProto(id) {
+  loadProto(id);
+  setTimeout(() => sendWhatsApp(), 400);
+}
+
+function fileProto(id) {
+  const d = lsGet(`hh_p_${id}`, {});
+  if (!d.id) return;
+  const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Protokoll-${d.id}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function txtProto(id) {
+  loadProto(id);
+  setTimeout(() => exportTXT(), 200);
+}
+
+function wordProto(id) {
+  loadProto(id);
+  setTimeout(() => exportWord(), 200);
+}
+
+function exportPDF() {
+  closeModal();
+  setTimeout(() => {
+    window.print();
+  }, 100);
+}
+
+function buildTextContent() {
+  const d = gatherData();
+  const f = d.fields;
+  const r = d.radios;
+  const lines = [];
+  const line = (label, val) => val ? lines.push(`${label}: ${val}`) : null;
+  const sec = title => { lines.push(''); lines.push(`=== ${title} ===`); };
+
+  lines.push('BESICHTIGUNGSPROTOKOLL HAUSHALTSAUFLÖSUNG');
+  lines.push('==========================================');
+
+  sec('1. Auftrag & Kundendaten');
+  line('Protokoll-Nr.', f.nr);
+  line('Datum', f.datum);
+  line('Besichtigt von', f.von);
+  line('Kunde', f.kname);
+  line('Telefon', f.ktel);
+  line('E-Mail', f.kemail);
+  line('Beziehung zum Objekt', f.kbez);
+  if (f.rname) line('Rechnungsempfänger', f.rname);
+  if (f.rstr) line('Rechnungsstraße', `${f.rstr}, ${f.rplz} ${f.rort}`);
+
+  sec('Objekt');
+  line('Typ', d.objtyp === 'wohnung' ? 'Wohnung' : d.objtyp === 'haus' ? 'Haus' : '');
+  line('Adresse', `${f.ostr}, ${f.oplz} ${f.oort}`);
+  if (d.objtyp === 'wohnung') {
+    line('Etage', f.oetage);
+    line('Aufzug', r.aufzug);
+    line('Zimmer', f.oZimmerWohnung);
+  } else {
+    line('Stockwerke', f.oStockwerke);
+    line('Zimmer', f.oZimmerHaus);
+    line('Keller', r.keller);
+    line('Dachboden', r.dachboden);
+    line('Garage', r.garage);
+  }
+  line('Wohnfläche', f.flaeche ? f.flaeche + ' m²' : '');
+  line('Baujahr', f.baujahr);
+  line('Gewünschter Termin', f.wtermin);
+  line('Terminflexibilität', f.tflex);
+
+  sec('2. Raumerfassung');
+  d.rooms.forEach((rm, i) => {
+    lines.push(`  Raum ${i+1}: ${rm.typ||'–'} | Größe: ${rm.sz||'–'} | ${rm.m2 ? rm.m2+' m²' : ''} | Verschmutzung: ${rm.schmutz||'–'}`);
+    if (rm.inhalt?.length) lines.push(`    Inhalt: ${rm.inhalt.join(', ')}`);
+    if (rm.notiz) lines.push(`    Notiz: ${rm.notiz}`);
+  });
+
+  sec('3. Gesamtzustand & Besonderheiten');
+  line('Gesamtverschmutzung', d.ratings.gesamt ? d.ratings.gesamt + '/5' : '');
+  line('Geruch', r.geruch);
+  line('Schädlinge', r.schaedl);
+  if (f.schaedlart) line('Art der Schädlinge', f.schaedlart);
+  line('Schimmel', r.schimmel);
+  line('Tierhaltung', r.tiere);
+  line('Sonstige Besonderheiten', f.besonders);
+
+  sec('4. Verwertbare Möbel & Gegenstände');
+  d.verwertbar.forEach(v => {
+    if (v.name) lines.push(`  ${v.name}${v.anzahl ? ' ('+v.anzahl+'x)' : ''}${v.wert ? ' ca. '+v.wert+' €' : ''}`);
+  });
+  line('Geschätzter Gesamterlös', f.erloes ? f.erloes + ' €' : '');
+  line('Erlös verrechnen', r.verrechnung);
+
+  sec('5. Entsorgung & Müll');
+  line('Sperrmüll', f.spm3 ? f.spm3 + ' m³' : '');
+  line('Anhänger-/LKW-Ladungen', f.anhaenger);
+  line('Deponiefahrten', f.deponie);
+  line('Container', r.container);
+  line('Elektroschrott', r.elek);
+  line('Entsorgungskosten ca.', f.entkost ? f.entkost + ' €' : '');
+  if (d.sondm?.length) line('Sondermüll', d.sondm.join(', '));
+  line('Sondermüll-Anmerkungen', f.sondnotiz);
+
+  sec('6. Logistik & Zugänglichkeit');
+  line('Parkmöglichkeiten', r.parken);
+  line('Halteverbotszone', r.hvz);
+  line('Treppenhaus', r.treppe);
+  line('Zufahrt', r.zufahrt);
+  line('Arbeitsstunden', f.stunden);
+  line('Personen', f.personen);
+  line('Arbeitstage', f.tage);
+  line('Kleintransporter', f.fzkl);
+  line('LKW', f.fzlkw);
+  line('Anhänger', f.fzanh);
+  line('Logistik-Anmerkungen', f.lognotiz);
+
+  sec('7. Preiskalkulation');
+  line('Stundensatz', f.satz ? f.satz + ' €/h' : '');
+  line('Arbeitskosten', f['p-arbeit'] ? f['p-arbeit'] + ' €' : '');
+  line('Entsorgungskosten', f['p-entsor'] ? f['p-entsor'] + ' €' : '');
+  line('Fahrtkosten', f['p-fahrt'] ? f['p-fahrt'] + ' €' : '');
+  line('Reinigung', f['p-reinig'] ? f['p-reinig'] + ' €' : '');
+  line('Sondermüll-Entsorgung', f['p-sond'] ? f['p-sond'] + ' €' : '');
+  line('Sonstiges', f['p-sonst'] ? f['p-sonst'] + ' €' : '');
+  line('Verwertungserlös (Abzug)', f['p-erloes'] ? f['p-erloes'] + ' €' : '');
+  line('MwSt.', f.mwst === '0' ? 'Ohne (Kleinunternehmer)' : f.mwst + '%');
+  line('Netto Gesamt', document.getElementById('netto-out')?.textContent);
+  line('Brutto Angebotspreis', document.getElementById('brutto-out')?.textContent);
+  if (f.nachlass && parseFloat(f.nachlass) > 0) line('Nachlass', f.nachlass + ' €');
+  line('Zahlungsart', r.zahlung);
+  line('Angebot gültig bis', f.agueltig);
+
+  sec('8. Notizen');
+  line('Notizen', f.notizen);
+
+  lines.push('');
+  lines.push(`Erstellt am: ${new Date().toLocaleString('de-DE')}`);
+  return lines.join('\n');
+}
+
+function saveToFile() {
+  const d = gatherData();
+  const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+  const name = `Protokoll-${d.id || 'unbekannt'}.json`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function loadFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.id) throw new Error('Kein gültiges Protokoll');
+      loadProto_data(d);
+    } catch(err) {
+      alert('Datei konnte nicht gelesen werden. Bitte nur gültige Protokoll-JSON-Dateien verwenden.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportTXT() {
+  const text = buildTextContent();
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const id = document.getElementById('nr').value || 'protokoll';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Besichtigungsprotokoll-${id}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportWord() {
+  const d = gatherData();
+  const f = d.fields;
+  const r = d.radios;
+  const row = (label, val) => val ? `<tr><td style="padding:5px 12px 5px 0;color:#555;width:40%;vertical-align:top;"><b>${label}</b></td><td style="padding:5px 0;">${val}</td></tr>` : '';
+  const section = (num, title, content) => `
+    <h2 style="background:#1c2b3a;color:#fff;padding:10px 14px;border-radius:4px;font-size:14px;margin:20px 0 10px;">${num}. ${title}</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">${content}</table>`;
+
+  let roomRows = d.rooms.map((rm, i) =>
+    row(`Raum ${i+1}`, `${rm.typ||'–'} | Größe: ${rm.sz||'–'}${rm.m2?' | '+rm.m2+' m²':''} | Verschmutzung: ${rm.schmutz||'–'}${rm.inhalt?.length?' | '+rm.inhalt.join(', '):''}${rm.notiz?' | '+rm.notiz:''}`)
+  ).join('');
+
+  let verwRows = d.verwertbar.filter(v=>v.name).map(v =>
+    row(v.name, `${v.anzahl ? v.anzahl+'x':''} ${v.wert ? '| ca. '+v.wert+' €':''}`)
+  ).join('');
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>body{font-family:Arial,sans-serif;max-width:800px;margin:30px auto;color:#1a1a1a;font-size:13px;}
+h1{color:#1c2b3a;border-bottom:3px solid #d4820a;padding-bottom:8px;}
+table{width:100%;border-collapse:collapse;}
+td{padding:5px 12px 5px 0;vertical-align:top;}
+</style></head><body>
+<h1>Besichtigungsprotokoll Haushaltsauflösung</h1>
+${section(1,'Auftrag & Kundendaten',
+  row('Protokoll-Nr.', f.nr) +
+  row('Datum', f.datum) +
+  row('Besichtigt von', f.von) +
+  row('Kunde', f.kname) +
+  row('Telefon', f.ktel) +
+  row('E-Mail', f.kemail) +
+  row('Beziehung', f.kbez) +
+  row('Objekt', f.ostr+', '+f.oplz+' '+f.oort) +
+  row('Typ', d.objtyp==='wohnung'?'Wohnung':d.objtyp==='haus'?'Haus':'') +
+  row('Wohnfläche', f.flaeche?f.flaeche+' m²':'') +
+  row('Baujahr', f.baujahr) +
+  row('Gewünschter Termin', f.wtermin)
+)}
+${section(2,'Raumerfassung', roomRows||row('Räume','–'))}
+${section(3,'Gesamtzustand',
+  row('Gesamtverschmutzung', d.ratings.gesamt?d.ratings.gesamt+'/5':'') +
+  row('Geruch', r.geruch) +
+  row('Schädlinge', r.schaedl) +
+  row('Schimmel', r.schimmel) +
+  row('Tierhaltung', r.tiere) +
+  row('Besonderheiten', f.besonders)
+)}
+${section(4,'Verwertbare Gegenstände', (verwRows||'')+row('Gesamterlös ca.', f.erloes?f.erloes+' €':''))}
+${section(5,'Entsorgung',
+  row('Sperrmüll', f.spm3?f.spm3+' m³':'') +
+  row('Container', r.container) +
+  row('Elektroschrott', r.elek) +
+  row('Entsorgungskosten ca.', f.entkost?f.entkost+' €':'') +
+  row('Sondermüll', d.sondm?.join(', '))
+)}
+${section(6,'Logistik',
+  row('Parken', r.parken) +
+  row('Treppenhaus', r.treppe) +
+  row('Zufahrt', r.zufahrt) +
+  row('Arbeitsstunden', f.stunden) +
+  row('Personen', f.personen) +
+  row('Arbeitstage', f.tage) +
+  row('Anmerkungen', f.lognotiz)
+)}
+${section(7,'Preiskalkulation',
+  row('Stundensatz', f.satz?f.satz+' €/h':'') +
+  row('Arbeitskosten', f['p-arbeit']?f['p-arbeit']+' €':'') +
+  row('Entsorgungskosten', f['p-entsor']?f['p-entsor']+' €':'') +
+  row('Fahrtkosten', f['p-fahrt']?f['p-fahrt']+' €':'') +
+  row('Sonstiges', f['p-sonst']?f['p-sonst']+' €':'') +
+  row('Verwertungserlös (Abzug)', f['p-erloes']?'- '+f['p-erloes']+' €':'') +
+  row('MwSt.', f.mwst==='0'?'Ohne (Kleinunternehmer)':f.mwst+'%') +
+  '<tr><td><b>Brutto Angebotspreis</b></td><td><b style="font-size:15px;">'+(document.getElementById('brutto-out')?.textContent||'')+'</b></td></tr>' +
+  row('Angebot gültig bis', f.agueltig) +
+  row('Zahlungsart', r.zahlung)
+)}
+${section(8,'Notizen', row('', f.notizen))}
+<p style="color:#888;font-size:11px;margin-top:30px;">Erstellt am: ${new Date().toLocaleString('de-DE')}</p>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'application/msword;charset=utf-8' });
+  const id = document.getElementById('nr').value || 'protokoll';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Besichtigungsprotokoll-${id}.doc`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function delProto(id) {
+  if (!confirm('Protokoll wirklich löschen?')) return;
+  lsRemove(`hh_p_${id}`);
+  const list = lsGet('hh_list', []).filter(p => p.id !== id);
+  lsSet('hh_list', list);
+  showProtocols();
+}
+
+function newProtocol() {
+  if (!confirm('Neues Protokoll starten? Nicht gespeicherte Daten gehen verloren.')) return;
+  document.getElementById('prot').reset();
+
+  // Rating-Anzeige zurücksetzen
+  document.querySelectorAll('.rb').forEach(b => b.classList.remove('on'));
+  Object.keys(rats).forEach(k => delete rats[k]);
+
+  // Objekttyp zurücksetzen
+  document.getElementById('objtyp-val').value = '';
+  document.getElementById('ot-wohnung').classList.remove('on');
+  document.getElementById('ot-haus').classList.remove('on');
+  ['field-etage','field-aufzug','field-zimmer-wohnung'].forEach(id => {
+    document.getElementById(id).style.display = '';
+  });
+  ['field-stockwerke','field-zimmer-haus','field-keller','field-dachboden','field-garage'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+
+  // Räume + Verwertbar
+  document.getElementById('raeume').innerHTML = '';
+  document.getElementById('verwertbar').innerHTML = '';
+  roomIdx = 0; vIdx = 0;
+
+  // Canvas
+  strokes = [];
+  ctx?.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Neue ID + Datum
+  genId();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('datum').value = today;
+  const g = new Date(); g.setDate(g.getDate()+14);
+  document.getElementById('agueltig').value = g.toISOString().split('T')[0];
+
+  // Standardwerte
+  document.getElementById('satz').value = '60';
+  addRaum();
+  addVerwertbar();
+
+  // Preis zurücksetzen
+  document.getElementById('netto-out').textContent = '0,00 €';
+  document.getElementById('mwst-out').textContent = '—';
+  document.getElementById('brutto-out').textContent = '0,00 €';
+  document.getElementById('endbox').style.display = 'none';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger-btn');
+  const open = menu.classList.toggle('open');
+  btn.textContent = open ? '✕' : '☰';
+}
+
+// ============================================================
+// TAGESBERICHT
+// ============================================================
+function showTagesberichtDialog() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('tb-datum').value = today;
+  updateTbPreview();
+  document.getElementById('modal-tagesbericht').classList.add('show');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('tb-datum')?.addEventListener('change', updateTbPreview);
+});
+
+function getTagesProtokolle(datum) {
+  const list = lsGet('hh_list', []);
+  return list
+    .filter(p => p.ts && p.ts.startsWith(datum))
+    .map(p => lsGet(`hh_p_${p.id}`, null))
+    .filter(Boolean);
+}
+
+function updateTbPreview() {
+  const datum = document.getElementById('tb-datum').value;
+  if (!datum) return;
+  const protos = getTagesProtokolle(datum);
+  const el = document.getElementById('tb-preview');
+  el.textContent = protos.length
+    ? `${protos.length} Protokoll${protos.length > 1 ? 'e' : ''} gefunden`
+    : 'Keine Protokolle für diesen Tag gespeichert.';
+}
+
+function buildTagesberichtData(datum) {
+  const protos = getTagesProtokolle(datum);
+  return protos;
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function exportTagesbericht(format) {
+  const datum = document.getElementById('tb-datum').value;
+  if (!datum) return;
+  const protos = buildTagesberichtData(datum);
+  if (!protos.length) { alert('Keine Protokolle für diesen Tag gefunden.'); return; }
+
+  document.getElementById('modal-tagesbericht').classList.remove('show');
+
+  if (format === 'txt') { exportTagesberichtTXT(datum, protos); return; }
+  if (format === 'word') { exportTagesberichtWord(datum, protos); return; }
+
+  // PDF via Print
+  const win = window.open('', '_blank');
+  win.document.write(buildTagesberichtHTML(datum, protos, true));
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); }, 400);
+}
+
+function buildTagesberichtHTML(datum, protos, forPrint) {
+  const gesamtBrutto = protos.reduce((sum, d) => {
+    const f = d.fields || {};
+    const r = d.radios || {};
+    const netto = ['p-arbeit','p-entsor','p-fahrt','p-reinig','p-sond','p-sonst']
+      .reduce((s, k) => s + (parseFloat(f[k]) || 0), 0) - (parseFloat(f['p-erloes']) || 0);
+    const mwst = netto * (parseFloat(f.mwst) || 0) / 100;
+    return sum + netto + mwst;
+  }, 0);
+
+  const rows = protos.map((d, i) => {
+    const f = d.fields || {};
+    const r = d.radios || {};
+    const netto = ['p-arbeit','p-entsor','p-fahrt','p-reinig','p-sond','p-sonst']
+      .reduce((s, k) => s + (parseFloat(f[k]) || 0), 0) - (parseFloat(f['p-erloes']) || 0);
+    const mwst = netto * (parseFloat(f.mwst) || 0) / 100;
+    const brutto = netto + mwst;
+    const adresse = [f.ostr, f.oplz, f.oort].filter(Boolean).join(', ');
+    const zimmer = f.oZimmerWohnung || f.oZimmerHaus || '';
+    const flaeche = f.flaeche ? f.flaeche + ' m²' : '';
+    const verschm = d.ratings?.gesamt ? d.ratings.gesamt + '/5' : '';
+    const raeumeAnz = (d.rooms || []).length;
+    const sondm = (d.sondm || []).join(', ');
+
+    return `
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:12px 10px;font-weight:700;vertical-align:top;">${i + 1}</td>
+      <td style="padding:12px 10px;vertical-align:top;">
+        <div style="font-weight:700;">${f.kname || '–'}</div>
+        <div style="font-size:12px;color:#666;">${f.ktel || ''} ${f.kemail ? '| ' + f.kemail : ''}</div>
+        <div style="font-size:12px;color:#666;">${f.kbez || ''}</div>
+      </td>
+      <td style="padding:12px 10px;vertical-align:top;">
+        <div>${adresse || '–'}</div>
+        <div style="font-size:12px;color:#666;">${d.objtyp === 'wohnung' ? 'Wohnung' : d.objtyp === 'haus' ? 'Haus' : ''} ${zimmer ? zimmer + ' Zi.' : ''} ${flaeche}</div>
+      </td>
+      <td style="padding:12px 10px;vertical-align:top;text-align:center;">${raeumeAnz}</td>
+      <td style="padding:12px 10px;vertical-align:top;text-align:center;">${verschm}</td>
+      <td style="padding:12px 10px;vertical-align:top;">${r.geruch || '–'} ${sondm ? '<br><span style="font-size:11px;color:#c0392b;">Sondermüll: ' + sondm + '</span>' : ''}</td>
+      <td style="padding:12px 10px;vertical-align:top;text-align:right;font-weight:700;color:#1c2b3a;">${brutto > 0 ? new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(brutto) : '–'}</td>
+      <td style="padding:12px 10px;vertical-align:top;font-size:12px;color:#555;">${f.besonders || f.notizen || ''}</td>
+    </tr>`;
+  }).join('');
+
+  const printStyle = forPrint ? `@media print { @page { margin: 12mm; size: A4 landscape; } body { margin: 0; } }` : '';
+
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; color: #1a1a1a; font-size: 13px; margin: 20px; }
+h1 { color: #1c2b3a; margin: 0 0 4px; font-size: 20px; }
+.sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #1c2b3a; color: #fff; }
+thead td { padding: 10px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+tbody tr:nth-child(even) { background: #f9f9f7; }
+.total-row { background: #1c2b3a !important; color: #fff; font-weight: 700; }
+.total-row td { padding: 12px 10px; }
+.badge { background: #d4820a; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+${printStyle}
+</style></head><body>
+<h1>Tagesbericht Haushaltsauflösung</h1>
+<div class="sub">${formatDate(datum + 'T12:00:00')} &nbsp;|&nbsp; <span class="badge">${protos.length} Besichtigung${protos.length !== 1 ? 'en' : ''}</span></div>
+<table>
+  <thead><tr>
+    <td>#</td>
+    <td>Kunde</td>
+    <td>Objekt</td>
+    <td style="text-align:center;">Räume</td>
+    <td style="text-align:center;">Zustand</td>
+    <td>Besonderheiten</td>
+    <td style="text-align:right;">Angebot</td>
+    <td>Notizen</td>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot><tr class="total-row">
+    <td colspan="6" style="text-align:right;letter-spacing:1px;text-transform:uppercase;font-size:12px;">Gesamt Angebotssumme</td>
+    <td style="text-align:right;font-size:16px;">${new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(gesamtBrutto)}</td>
+    <td></td>
+  </tr></tfoot>
+</table>
+<p style="color:#aaa;font-size:11px;margin-top:24px;">Erstellt am ${new Date().toLocaleString('de-DE')}</p>
+</body></html>`;
+}
+
+function exportTagesberichtWord(datum, protos) {
+  const html = buildTagesberichtHTML(datum, protos, false);
+  const blob = new Blob([html], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Tagesbericht-${datum}.doc`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportTagesberichtTXT(datum, protos) {
+  const lines = [];
+  lines.push('TAGESBERICHT HAUSHALTSAUFLÖSUNG');
+  lines.push('================================');
+  lines.push(formatDate(datum + 'T12:00:00'));
+  lines.push(`${protos.length} Besichtigung${protos.length !== 1 ? 'en' : ''}`);
+
+  let gesamtBrutto = 0;
+  protos.forEach((d, i) => {
+    const f = d.fields || {};
+    const r = d.radios || {};
+    const netto = ['p-arbeit','p-entsor','p-fahrt','p-reinig','p-sond','p-sonst']
+      .reduce((s, k) => s + (parseFloat(f[k]) || 0), 0) - (parseFloat(f['p-erloes']) || 0);
+    const mwst = netto * (parseFloat(f.mwst) || 0) / 100;
+    const brutto = netto + mwst;
+    gesamtBrutto += brutto;
+    lines.push('');
+    lines.push(`Besichtigung ${i + 1}`);
+    lines.push(`Kunde: ${f.kname || '–'} | ${f.ktel || ''} | ${f.kemail || ''}`);
+    lines.push(`Objekt: ${[f.ostr, f.oplz, f.oort].filter(Boolean).join(', ')}`);
+    lines.push(`Typ: ${d.objtyp === 'wohnung' ? 'Wohnung' : d.objtyp === 'haus' ? 'Haus' : '–'} | Fläche: ${f.flaeche ? f.flaeche + ' m²' : '–'}`);
+    lines.push(`Zustand: ${d.ratings?.gesamt ? d.ratings.gesamt + '/5' : '–'} | Geruch: ${r.geruch || '–'}`);
+    if (d.sondm?.length) lines.push(`Sondermüll: ${d.sondm.join(', ')}`);
+    lines.push(`Angebotspreis (Brutto): ${brutto > 0 ? new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(brutto) : '–'}`);
+    if (f.besonders) lines.push(`Besonderheiten: ${f.besonders}`);
+    if (f.notizen) lines.push(`Notizen: ${f.notizen}`);
+  });
+
+  lines.push('');
+  lines.push('================================');
+  lines.push(`GESAMT: ${new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(gesamtBrutto)}`);
+  lines.push('');
+  lines.push(`Erstellt: ${new Date().toLocaleString('de-DE')}`);
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Tagesbericht-${datum}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+</script>
+</body>
+</html>
