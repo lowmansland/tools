@@ -470,8 +470,12 @@ canvas {
         <input type="text" id="kname" placeholder="Vor- und Nachname">
       </div>
       <div class="f">
-        <label class="fl">Telefon</label>
+        <label class="fl">Telefon (Festnetz)</label>
         <input type="tel" id="ktel" placeholder="+49 ...">
+      </div>
+      <div class="f">
+        <label class="fl">Handy (für WhatsApp)</label>
+        <input type="tel" id="khandy" placeholder="+49 ...">
       </div>
       <div class="f">
         <label class="fl">E-Mail</label>
@@ -1116,7 +1120,7 @@ function p2(n) { return String(n).padStart(2,'0'); }
 // WHATSAPP
 // ============================================================
 function sendWhatsApp() {
-  const tel = document.getElementById('ktel').value.trim();
+  const tel = document.getElementById('khandy').value.trim() || document.getElementById('ktel').value.trim();
   const name = document.getElementById('kname').value.trim();
   const ostr = document.getElementById('ostr').value.trim();
   const oplz = document.getElementById('oplz').value.trim();
@@ -1126,7 +1130,7 @@ function sendWhatsApp() {
   const agueltig = document.getElementById('agueltig').value;
 
   if (!tel) {
-    alert('Bitte zuerst die Telefonnummer des Kunden eintragen.');
+    alert('Bitte zuerst die Handynummer des Kunden eintragen (Feld "Handy").');
     return;
   }
 
@@ -1721,7 +1725,8 @@ function buildTextContent() {
   line('Datum', f.datum);
   line('Besichtigt von', f.von);
   line('Kunde', f.kname);
-  line('Telefon', f.ktel);
+  line('Telefon (Festnetz)', f.ktel);
+  if (f.khandy) line('Handy', f.khandy);
   line('E-Mail', f.kemail);
   line('Beziehung zum Objekt', f.kbez);
   if (f.rname) line('Rechnungsempfänger', f.rname);
@@ -1885,7 +1890,8 @@ ${section(1,'Auftrag & Kundendaten',
   row('Datum', f.datum) +
   row('Besichtigt von', f.von) +
   row('Kunde', f.kname) +
-  row('Telefon', f.ktel) +
+  row('Telefon (Festnetz)', f.ktel) +
+  (f.khandy ? row('Handy', f.khandy) : '') +
   row('E-Mail', f.kemail) +
   row('Beziehung', f.kbez) +
   row('Objekt', f.ostr+', '+f.oplz+' '+f.oort) +
@@ -2102,7 +2108,7 @@ function buildTagesberichtHTML(datum, protos, forPrint) {
       <td style="padding:12px 10px;font-weight:700;vertical-align:top;">${i + 1}</td>
       <td style="padding:12px 10px;vertical-align:top;">
         <div style="font-weight:700;">${f.kname || '–'}</div>
-        <div style="font-size:12px;color:#666;">${f.ktel || ''} ${f.kemail ? '| ' + f.kemail : ''}</div>
+        <div style="font-size:12px;color:#666;">${f.ktel || ''} ${f.khandy ? '| Handy: ' + f.khandy : ''} ${f.kemail ? '| ' + f.kemail : ''}</div>
         <div style="font-size:12px;color:#666;">${f.kbez || ''}</div>
       </td>
       <td style="padding:12px 10px;vertical-align:top;">
@@ -2186,7 +2192,7 @@ function exportTagesberichtTXT(datum, protos) {
     gesamtBrutto += brutto;
     lines.push('');
     lines.push(`Besichtigung ${i + 1}`);
-    lines.push(`Kunde: ${f.kname || '–'} | ${f.ktel || ''} | ${f.kemail || ''}`);
+    lines.push(`Kunde: ${f.kname || '–'} | Tel: ${f.ktel || ''} | Handy: ${f.khandy || ''} | ${f.kemail || ''}`);
     lines.push(`Objekt: ${[f.ostr, f.oplz, f.oort].filter(Boolean).join(', ')}`);
     lines.push(`Typ: ${d.objtyp === 'wohnung' ? 'Wohnung' : d.objtyp === 'haus' ? 'Haus' : '–'} | Fläche: ${f.flaeche ? f.flaeche + ' m²' : '–'}`);
     lines.push(`Zustand: ${d.ratings?.gesamt ? d.ratings.gesamt + '/5' : '–'} | Geruch: ${r.geruch || '–'}`);
