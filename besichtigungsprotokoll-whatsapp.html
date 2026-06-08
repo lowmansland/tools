@@ -104,7 +104,7 @@ header {
 }
 
 /* ---- MAIN ---- */
-main { max-width: 1000px; margin: 0 auto; padding: 92px 16px 100px; }
+main { max-width: 1000px; margin: 0 auto; padding: 80px 16px 100px; }
 
 /* ---- SECTION ---- */
 .section {
@@ -1080,6 +1080,16 @@ const ROOM_CONTENTS = [
 // ============================================================
 // INIT
 // ============================================================
+function adjustLayout() {
+  const header = document.querySelector('header');
+  const main   = document.querySelector('main');
+  const menu   = document.getElementById('mobile-menu');
+  if (!header) return;
+  const h = header.offsetHeight;
+  if (main) main.style.paddingTop = (h + 8) + 'px';
+  if (menu) menu.style.top = h + 'px';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('datum').value = today;
@@ -1089,6 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
   addRaum();
   addVerwertbar();
   initCanvas();
+  adjustLayout();
 });
 
 // ============================================================
@@ -1391,6 +1402,7 @@ function initCanvas() {
   ctx = canvas.getContext('2d');
   setCanvasSize();
   window.addEventListener('resize', setCanvasSize);
+  window.addEventListener('resize', adjustLayout);
   canvas.addEventListener('pointerdown', onDown);
   canvas.addEventListener('pointermove', onMove);
   canvas.addEventListener('pointerup', onUp);
