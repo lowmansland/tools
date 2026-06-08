@@ -419,6 +419,7 @@ canvas {
       <button class="btn btn-ghost btn-sm" onclick="exportWord()">📃 Word</button>
       <button class="btn btn-acc btn-sm" onclick="exportPDF()">📄 PDF</button>
       <button class="btn btn-wa btn-sm" onclick="sendWhatsApp()">💬 WhatsApp</button>
+      <button class="btn btn-ghost btn-sm" onclick="sendEmail()">✉️ E-Mail</button>
     </div>
     <button class="hamburger noprint" onclick="toggleMenu()" id="hamburger-btn">☰</button>
   </div>
@@ -434,6 +435,7 @@ canvas {
     <button class="btn btn-ghost btn-sm" onclick="exportWord();toggleMenu()">📃 Als Word exportieren</button>
     <button class="btn btn-acc btn-sm" onclick="exportPDF();toggleMenu()">📄 Als PDF exportieren</button>
     <button class="btn btn-wa btn-sm" onclick="sendWhatsApp();toggleMenu()">💬 WhatsApp senden</button>
+    <button class="btn btn-ghost btn-sm" onclick="sendEmail();toggleMenu()">✉️ E-Mail senden</button>
   </div>
 </header>
 
@@ -1016,6 +1018,8 @@ canvas {
 </main>
 
 <footer style="text-align:center;padding:20px 16px 30px;font-size:11px;color:#aaa;max-width:1000px;margin:0 auto;border-top:1px solid #eee;">
+  <a href="https://lowmansland.github.io/tools/anleitung-besichtigungsprotokoll-whatsapp.pdf" target="_blank" style="color:#d4820a;text-decoration:none;font-weight:700;">📄 Anleitung herunterladen</a>
+  <span style="margin:0 10px;">·</span>
   © 2026 Lowmansland.de. Alle Rechte vorbehalten. Dieses Tool ist lizenziert, nicht verkauft. Nutzung ausschließlich durch den Lizenznehmer. Vervielfältigung und Weitergabe ohne Genehmigung untersagt.
 </footer>
 
@@ -1133,6 +1137,90 @@ function sendWhatsApp() {
 
   const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
   window.open(url, '_blank');
+}
+
+// ============================================================
+// E-MAIL
+// ============================================================
+function sendEmail() {
+  const email = document.getElementById('kemail').value.trim();
+  if (!email) {
+    alert('Bitte zuerst die E-Mail-Adresse des Kunden eintragen.');
+    return;
+  }
+
+  const name    = document.getElementById('kname').value.trim();
+  const nr      = document.getElementById('nr').value.trim();
+  const datum   = document.getElementById('datum').value;
+  const ostr    = document.getElementById('ostr').value.trim();
+  const oplz    = document.getElementById('oplz').value.trim();
+  const oort    = document.getElementById('oort').value.trim();
+  const agueltig = document.getElementById('agueltig').value;
+  const stunden = document.getElementById('stunden').value;
+  const personen = document.getElementById('personen').value;
+  const tage    = document.getElementById('tage').value;
+  const objtyp  = document.getElementById('objtyp-val').value;
+
+  const adresse   = [ostr, oplz, oort].filter(Boolean).join(', ');
+  const gueltigStr = agueltig ? new Date(agueltig + 'T12:00:00').toLocaleDateString('de-DE') : '';
+  const datumStr   = datum   ? new Date(datum   + 'T12:00:00').toLocaleDateString('de-DE') : '';
+
+  const netto = ['p-arbeit','p-entsor','p-fahrt','p-reinig','p-sond','p-sonst']
+    .reduce((s,k) => s + (parseFloat(document.getElementById(k)?.value)||0), 0)
+    - (parseFloat(document.getElementById('p-erloes')?.value)||0);
+  const mwstP  = parseFloat(document.getElementById('mwst').value) || 0;
+  const mwstBetrag = netto * mwstP / 100;
+  const brutto = netto + mwstBetrag;
+  const nachlassVal = parseFloat(document.getElementById('nachlass')?.value) || 0;
+  const endpreis = brutto - nachlassVal;
+
+  const fmtEur = n => new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
+
+  const raumAnz = document.querySelectorAll('.room-card').length;
+  const typenLabel = objtyp === 'wohnung' ? 'Wohnung' : objtyp === 'haus' ? 'Haus' : 'Objekt';
+
+  const subject = `Ihr Angebot zur Haushaltsauflösung – ${adresse || 'Protokoll ' + nr}`;
+
+  let b = '';
+  b += `Guten Tag${name ? ' ' + name : ''},\n\n`;
+  b += `vielen Dank für Ihr Vertrauen. Nachfolgend erhalten Sie die Zusammenfassung unseres Angebots zur Haushaltsauflösung.\n\n`;
+  b += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  b += `ANGEBOT – HAUSHALTSAUFLÖSUNG\n`;
+  b += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  b += `Protokoll-Nr.:      ${nr}\n`;
+  if (datumStr)  b += `Besichtigt am:      ${datumStr}\n`;
+  if (adresse)   b += `Objekt:             ${adresse}\n`;
+  if (objtyp)    b += `Objekttyp:          ${typenLabel}\n`;
+  if (raumAnz)   b += `Erfasste Räume:     ${raumAnz}\n`;
+  b += '\n';
+  if (stunden)   b += `Arbeitsstunden:     ca. ${stunden} Std.\n`;
+  if (personen)  b += `Benötigte Personen: ${personen}\n`;
+  if (tage)      b += `Arbeitstage:        ca. ${tage} Tag${tage > 1 ? 'e' : ''}\n`;
+  if (stunden || personen || tage) b += '\n';
+  b += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  b += `PREISÜBERSICHT\n`;
+  b += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  b += `Netto:              ${fmtEur(netto)}\n`;
+  if (mwstP > 0) {
+    b += `MwSt. (${mwstP} %):      ${fmtEur(mwstBetrag)}\n`;
+    b += `Brutto:             ${fmtEur(brutto)}\n`;
+  } else {
+    b += `MwSt.:              gem. § 19 UStG nicht ausgewiesen\n`;
+    b += `Gesamtbetrag:       ${fmtEur(brutto)}\n`;
+  }
+  if (nachlassVal > 0) {
+    b += `Nachlass:           - ${fmtEur(nachlassVal)}\n`;
+    b += `Endpreis:           ${fmtEur(endpreis)}\n`;
+  }
+  b += '\n';
+  if (gueltigStr) b += `Angebot gültig bis: ${gueltigStr}\n\n`;
+  b += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  b += `Für Rückfragen stehen wir Ihnen jederzeit gerne zur Verfügung.\n\n`;
+  b += `Mit freundlichen Grüßen`;
+
+  window.location.href = 'mailto:' + email
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body='    + encodeURIComponent(b);
 }
 
 // ============================================================
