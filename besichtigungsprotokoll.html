@@ -92,7 +92,7 @@ header {
 }
 
 /* ---- MAIN ---- */
-main { max-width: 1000px; margin: 0 auto; padding: 92px 16px 100px; }
+main { max-width: 1000px; margin: 0 auto; padding: 80px 16px 100px; }
 
 /* ---- SECTION ---- */
 .section {
@@ -1000,6 +1000,8 @@ canvas {
 </main>
 
 <footer style="text-align:center;padding:20px 16px 30px;font-size:11px;color:#aaa;max-width:1000px;margin:0 auto;border-top:1px solid #eee;">
+  <a href="https://lowmansland.github.io/tools/anleitung-besichtigungsprotokoll.pdf" target="_blank" style="color:#d4820a;text-decoration:none;font-weight:700;">📄 Anleitung herunterladen</a>
+  <span style="margin:0 10px;">·</span>
   © 2026 Lowmansland.de. Alle Rechte vorbehalten. Dieses Tool ist lizenziert, nicht verkauft. Nutzung ausschließlich durch den Lizenznehmer. Vervielfältigung und Weitergabe ohne Genehmigung untersagt.
 </footer>
 
@@ -1060,6 +1062,13 @@ const ROOM_CONTENTS = [
 // ============================================================
 // INIT
 // ============================================================
+function adjustMainPadding() {
+  const h = document.querySelector('header').offsetHeight;
+  document.querySelector('main').style.paddingTop = (h + 12) + 'px';
+}
+window.addEventListener('load', adjustMainPadding);
+window.addEventListener('resize', adjustMainPadding);
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('datum').value = today;
